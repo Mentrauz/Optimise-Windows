@@ -1120,6 +1120,9 @@ button {
   flex-wrap: wrap;
 }
 
+.footer__note { flex-basis: 100%; margin: 4px 0 0; }
+.footer__note a { color: var(--text-2); text-decoration: underline; text-underline-offset: 2px; }
+.footer__note a:hover { color: var(--accent-text); }
 .footer__credits { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .footer__credits b { color: var(--text-2); font-weight: 600; }
 .footer__credits a { color: var(--text-2); }

@@ -24,6 +24,12 @@ export function Footer() {
           </a>
         ))}
       </span>
+      <p className="footer__note">
+        Every setting here comes from years of trial and error while troubleshooting Windows, and they&rsquo;re my personal
+        recommendations. Want to add or change something?{" "}
+        <a href="mailto:11soumyasingh2@gmail.com">Email me</a> or{" "}
+        <a href="https://github.com/Mentrauz/Optimise-Windows/pulls" target="_blank" rel="noopener noreferrer">open a PR on GitHub</a> :D
+      </p>
     </footer>
   );
 }
