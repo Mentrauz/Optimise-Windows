@@ -22,7 +22,7 @@ export interface Category {
   /** One-line description shown under the page title and on tiles. */
   blurb: string;
   /** Key used by <CategoryIcon /> */
-  icon: CategoryId | "home" | "avoid";
+  icon: CategoryId | "home" | "avoid" | "tools" | "download";
   /** Tile colour (WinUI-style icon plate). */
   tint: string;
 }
@@ -949,6 +949,11 @@ export const avoidList: Avoid[] = [
     reality: "They often disable services other features depend on, and changes are hard to undo. Uninstalling apps you don't want from Settings is safer.",
   },
   {
+    title: "Unofficial activation scripts and cracked keys",
+    claim: "One command activates Windows and Office for free, forever.",
+    reality: "Using Windows or Office without a valid licence breaks Microsoft's licence terms, and these scripts run with full admin rights. Use the free and legitimate options on the Optional tools page instead.",
+  },
+  {
     title: "Disabling the page file",
     claim: "With enough RAM, virtual memory just slows things down.",
     reality: "Some apps require a page file and will crash without it. Windows manages its size well on its own.",
@@ -971,7 +976,7 @@ export const avoidList: Avoid[] = [
 ];
 
 export const principles = [
-  { title: "Built-in settings only", text: "Everything here is a switch already in Windows. No scripts, downloads or registry edits." },
+  { title: "Built-in settings first", text: "Every main tweak is a switch already in Windows. Third-party tools are optional, clearly marked and limited to their safe parts." },
   { title: "Easy to undo", text: "Every tweak tells you exactly how to switch it back." },
   { title: "Do what matters for you", text: "Pick laptop, desktop or gaming and we'll highlight the tweaks that help most." },
 ];
@@ -999,3 +1004,331 @@ const impactRank: Record<Impact, number> = { High: 0, Medium: 1, Low: 2 };
 export function byImpact(a: Tweak, b: Tweak) {
   return impactRank[a.impact] - impactRank[b.impact];
 }
+
+// ───────────── Optional third-party tools ─────────────
+// Only the safe, reversible parts are recommended. Everything else is listed under "skip".
+
+export interface ToolOption {
+  name: string;
+  note: string;
+}
+
+export interface Tool {
+  id: string;
+  name: string;
+  maker: string;
+  tagline: string;
+  cost: string;
+  kind: string;
+  source: { label: string; url: string };
+  launch?: { label: string; value: string };
+  before: string[];
+  use: ToolOption[];
+  skip: ToolOption[];
+  undo: string;
+  caution?: string;
+}
+
+export const tools: Tool[] = [
+  {
+    id: "shutup10",
+    name: "O&O ShutUp10++",
+    maker: "O&O Software",
+    tagline: "A single screen of privacy switches, each rated by how safe it is to change.",
+    cost: "Free, with an optional paid edition",
+    kind: "Portable app, no install",
+    source: { label: "oo-software.com/en/shutup10", url: "https://www.oo-software.com/en/shutup10" },
+    before: [
+      "Download it only from the O&O website. It's a single .exe that runs without installing.",
+      "Select Restart as Admin on the Local Machine tab so system-wide settings can be changed.",
+      "Open Actions › Create a system restoration point.",
+    ],
+    use: [
+      { name: "Actions › Apply only recommended settings", note: "Changes only the settings O&O rates as Recommended: safe for most people, with minimal effect on how Windows works." },
+      { name: "Secure Boot certificate status", note: "Check that your PC shows the updated (2023) certificates. If it doesn't, keep Windows Update running before turning off more telemetry." },
+      { name: "Re-check after big Windows updates", note: "Feature updates can reset some settings. Open the app again and re-apply recommended settings if needed." },
+    ],
+    skip: [
+      { name: "Settings rated Limited", note: "Generally safe but they switch off features some people use, like Copilot, search suggestions or app sync. Only change ones you understand." },
+      { name: "Settings rated Not recommended", note: "These can break Windows Update, Microsoft Store, Defender updates or sign-in features." },
+      { name: "The paid edition, unless you manage several PCs", note: "Its main extra is a background service that re-applies settings automatically. Re-running the free app now and then does the same job." },
+    ],
+    undo: "Actions › Undo shows every change and can reverse them, even from an earlier session. The restore point is your fallback.",
+    caution: "Turning off all telemetry can stop Windows from updating your PC's Secure Boot certificates automatically. Stick to the Recommended settings.",
+  },
+  {
+    id: "winutil",
+    name: "Chris Titus Tech's Windows Utility",
+    maker: "Chris Titus Tech (open source)",
+    tagline: "A toolbox for installing apps, a few tweaks and some repair tools. Treat it as a toolbox, not a one-click button.",
+    cost: "Free, open source (MIT)",
+    kind: "PowerShell script with a graphical window",
+    source: { label: "github.com/ChrisTitusTech/winutil", url: "https://github.com/ChrisTitusTech/winutil" },
+    launch: { label: "In Terminal (Admin)", value: "irm \"https://christitus.com/win\" | iex" },
+    before: [
+      "Right-click Start and choose Terminal (Admin).",
+      "Type the command exactly as shown. Never run a copy from a video description, comment or other website.",
+      "Leave Create Restore Point selected on the Tweaks tab. Recent versions create one automatically before running tweaks.",
+    ],
+    use: [
+      { name: "Install tab", note: "Install or update apps you choose in one go, using Microsoft's own winget package manager. Probably the most useful and safest part." },
+      { name: "Tweaks › Disable ConsumerFeatures", note: "Stops Windows from quietly installing suggested apps and games on new accounts." },
+      { name: "Tweaks › Disable Activity History", note: "The same as turning off activity history in Settings." },
+      { name: "Tweaks › Delete Temporary Files and Run Disk Cleanup", note: "A one-time tidy-up. Storage Sense does this on a schedule too." },
+      { name: "Tweaks › Enable End Task With Right Click", note: "Adds End task to taskbar right-click menus. Handy when an app freezes." },
+      { name: "Tweaks › Disable GameDVR", note: "For gamers who don't save clips. Same effect as turning off background recording." },
+      { name: "Config › repair tools", note: "Reset Windows Update and the system file check are useful when updates are stuck. They don't change any preferences." },
+    ],
+    skip: [
+      { name: "Advanced tweaks (marked CAUTION)", note: "Removing OneDrive, Copilot and other components, or reverting Start, can cause side effects. Not needed for speed." },
+      { name: "Set Services to Manual", note: "This is in the Standard preset, but the speed gain is tiny and it's the kind of bulk service change we advise against." },
+      { name: "Disable Telemetry", note: "Required diagnostic data helps Windows deliver security fixes like the Secure Boot certificate update. Use the Privacy settings on this site instead." },
+      { name: "Disable Storage Sense and Disable Hibernation", note: "Both undo useful defaults. Leave them on, especially on laptops." },
+      { name: "Updates tab › disabling updates", note: "Only for a short pause while a known bad update is fixed. Never leave updates off." },
+      { name: "Ultimate Performance power plan", note: "Use the Best performance power mode instead. Ultimate Performance mostly just stops your CPU from idling." },
+      { name: "Win11 Creator (custom ISO)", note: "A stripped-down Windows image is harder to support and update. Use Microsoft's own media." },
+    ],
+    undo: "Select the tweaks on the Tweaks tab and choose Undo Selected Tweaks. For anything else, use System Restore to go back to the restore point.",
+    caution: "The script needs admin rights, so it can change anything on your PC. Only use the official command, and don't select a whole preset without reading each item.",
+  },
+];
+
+export interface OfficialSource {
+  title: string;
+  text: string;
+  links: { label: string; url: string }[];
+}
+
+/** Genuine ways to download and license Windows and Office. */
+export const officialSources: OfficialSource[] = [
+  {
+    title: "Windows 11",
+    text: "Microsoft offers three free downloads. Use Installation Assistant to upgrade this PC, Media Creation Tool to make a bootable USB, or the ISO for a virtual machine. You still need a licence to activate.",
+    links: [{ label: "Download Windows 11", url: "https://www.microsoft.com/software-download/windows11" }],
+  },
+  {
+    title: "Microsoft 365 and Office 2024",
+    text: "Sign in with the account your subscription or product key is linked to and install from there. An offline installer is available if your connection is unreliable.",
+    links: [
+      { label: "Install Microsoft 365 or Office", url: "https://support.microsoft.com/office/download-install-or-reinstall-microsoft-365-or-office-2024-on-a-pc-or-mac-4414eaaf-0478-48be-9c42-23adc4716658" },
+      { label: "Offline installer", url: "https://support.microsoft.com/office/use-the-office-offline-installer-f0a85fe7-118f-41cb-a791-d59cef96ad1c" },
+    ],
+  },
+  {
+    title: "Licences, legitimately",
+    text: "Most PCs already have a digital licence. Students, teachers, developers and nonprofits can also get Microsoft software free or at a discount.",
+    links: [
+      { label: "See every legitimate option", url: "#licences" },
+      { label: "Open Activation settings", url: "ms-settings:activation" },
+    ],
+  },
+];
+
+// ───────────── Legitimate licence programmes ─────────────
+
+export type Audience = "everyone" | "education" | "developers" | "nonprofits";
+
+export interface LicenceProgram {
+  id: string;
+  audience: Audience;
+  title: string;
+  summary: string;
+  /** What you actually get */
+  gives: string;
+  cost: string;
+  eligibility: string[];
+  steps: string[];
+  limits: string;
+  links: { label: string; url: string }[];
+  caution?: string;
+}
+
+export const audiences: { id: Audience; label: string }[] = [
+  { id: "everyone", label: "Everyone" },
+  { id: "education", label: "Students & teachers" },
+  { id: "developers", label: "Developers & IT pros" },
+  { id: "nonprofits", label: "Nonprofits" },
+];
+
+export const licencePrograms: LicenceProgram[] = [
+  // Everyone
+  {
+    id: "digital-licence",
+    audience: "everyone",
+    title: "Use the digital licence your PC already has",
+    summary: "Most PCs sold with Windows reactivate automatically, even after a clean reinstall.",
+    gives: "Windows 11 Home or Pro, permanently, on that PC",
+    cost: "Included with your PC",
+    eligibility: ["You bought a PC with Windows preinstalled, or you activated Windows on it before."],
+    steps: [
+      "Open Settings › System › Activation and check that Activation state says Active.",
+      "Sign in with a Microsoft account, then check that it says the licence is linked to your account. This makes reactivating after a hardware change much easier.",
+      "When you reinstall, choose the same edition (Home or Pro) and select I don't have a product key. Windows activates once it's online.",
+      "If you replace the motherboard, open Activation › Troubleshoot and choose I changed hardware on this device recently.",
+    ],
+    limits: "The licence belongs to that PC. Most licences that came with a PC can't be moved to a different one.",
+    links: [
+      { label: "Open Activation settings", url: "ms-settings:activation" },
+      { label: "Microsoft: Activate Windows", url: "https://support.microsoft.com/windows/activate-windows-c39005d4-95ee-b91e-b399-2820fda32227" },
+    ],
+  },
+  {
+    id: "win10-upgrade",
+    audience: "everyone",
+    title: "Upgrade a licensed Windows 10 PC",
+    summary: "A genuine Windows 10 licence activates Windows 11 on the same PC at no cost.",
+    gives: "Windows 11 in the same edition as your Windows 10",
+    cost: "Free",
+    eligibility: ["Windows 10 is activated on the PC.", "The PC meets Windows 11's hardware requirements (check with the PC Health Check app)."],
+    steps: [
+      "Check Settings › Update & Security › Windows Update. If Windows 11 is offered, select Download and install.",
+      "If it isn't offered yet, use Windows 11 Installation Assistant from Microsoft's download page.",
+      "After the upgrade, check Settings › System › Activation. It should already say Active.",
+    ],
+    limits: "Upgrades the edition you already have. Home stays Home and Pro stays Pro.",
+    links: [{ label: "Download Windows 11", url: "https://www.microsoft.com/software-download/windows11" }],
+  },
+  {
+    id: "m365-web",
+    audience: "everyone",
+    title: "Use Microsoft 365 free on the web",
+    summary: "Word, Excel, PowerPoint and Outlook in your browser with a free Microsoft account.",
+    gives: "Web versions of the Office apps with OneDrive storage",
+    cost: "Free",
+    eligibility: ["Anyone with a Microsoft account."],
+    steps: [
+      "Go to microsoft365.com and sign in, or create a free Microsoft account.",
+      "Open Word, Excel or PowerPoint from the app list. Files save to OneDrive.",
+    ],
+    limits: "Web apps only, with fewer advanced features than the desktop apps. For desktop Office you need Microsoft 365 or Office 2024.",
+    links: [{ label: "Open microsoft365.com", url: "https://www.microsoft365.com" }],
+  },
+
+  // Education
+  {
+    id: "azure-students",
+    audience: "education",
+    title: "Azure for Students",
+    summary: "Free cloud credit plus a catalogue of Microsoft software, verified with your school email.",
+    gives: "$100 of Azure credit for 12 months, plus developer software like Visual Studio, SQL Server and Windows Server. Some schools also include Windows 11 Education.",
+    cost: "Free, no credit card",
+    eligibility: [
+      "You're a full-time student at an accredited, degree-granting college or university (two-year or four-year).",
+      "You can verify with your school email address. Online courses and for-profit training don't count.",
+    ],
+    steps: [
+      "Go to azure.microsoft.com/free/students and select Start free.",
+      "Sign in and verify your student status with your school email.",
+      "Open the Azure Education Hub in the Azure portal and select Software.",
+      "Choose a product, then View key to get a product key and Download to get the installer.",
+    ],
+    limits: "Software is for your studies and personal learning. Renew each year while you're still a student. If Windows 11 Education isn't listed, your school hasn't enabled it. Ask your IT help desk.",
+    links: [
+      { label: "Azure for Students", url: "https://azure.microsoft.com/free/students" },
+      { label: "Education Hub FAQ", url: "https://learn.microsoft.com/azure/education-hub/faq" },
+    ],
+  },
+  {
+    id: "office-education",
+    audience: "education",
+    title: "Office 365 Education",
+    summary: "Free Office for students and teachers whose school is signed up.",
+    gives: "The free A1 plan includes web versions of Word, Excel, PowerPoint, Outlook and OneNote. Many schools pay for A3 or A5, which include the desktop apps.",
+    cost: "Free (A1) or paid by your school",
+    eligibility: ["You're a student or teacher with an email address from an eligible school."],
+    steps: [
+      "Go to Microsoft's Office 365 Education page and enter your school email address.",
+      "Follow the verification email. Approval is usually instant but can take longer.",
+      "Sign in at microsoft365.com with your school account. If your school includes desktop apps, select Install apps.",
+    ],
+    limits: "Ends when you leave the school, after which files become read-only. Re-verify or move to a personal plan to keep editing.",
+    links: [{ label: "Office 365 Education", url: "https://www.microsoft.com/education/products/office" }],
+    caution: "In November 2026, Microsoft announced it will retire the free A1 plan from January 2028, as schools renew. It will be replaced by a student-only A0 plan with desktop apps, which has conditions. Check with your school.",
+  },
+
+  // Developers
+  {
+    id: "m365-dev",
+    audience: "developers",
+    title: "Microsoft 365 Developer Program (E5 sandbox)",
+    summary: "A temporary Microsoft 365 E5 tenant for building and testing Teams apps, add-ins and Graph integrations.",
+    gives: "A Microsoft 365 E5 developer subscription with 25 user licences, for development only",
+    cost: "Needs a qualifying subscription",
+    eligibility: [
+      "Visual Studio Professional or Enterprise subscribers (standard subscriptions) qualify automatically.",
+      "Companies in the ISV Success Program, eligible Microsoft AI Cloud Partner Program tiers, or with Premier or Unified Support.",
+      "A free sign-up on its own no longer qualifies you for a sandbox.",
+    ],
+    steps: [
+      "Go to the Microsoft 365 Developer Program page and select Join now. Use a work or personal Microsoft account, not an onmicrosoft.com account.",
+      "Enter your contact email, country and company, accept the terms and choose your interests.",
+      "On the dashboard, complete eligibility, for example by linking your Visual Studio subscription.",
+      "Select Set up E5 subscription and create your sandbox admin account. Visual Studio subscribers can also start from my.visualstudio.com.",
+    ],
+    limits: "Lasts up to 90 days and may need to be recreated. Microsoft's terms say using it for anything other than application development, including personal Office use, breaks the licence agreement.",
+    links: [
+      { label: "About the program", url: "https://learn.microsoft.com/office/developer-program/microsoft-365-developer-program" },
+      { label: "Program FAQ", url: "https://learn.microsoft.com/office/developer-program/microsoft-365-developer-program-faq" },
+    ],
+  },
+  {
+    id: "visual-studio-subscription",
+    audience: "developers",
+    title: "Visual Studio Professional or Enterprise subscriptions",
+    summary: "Paid developer subscriptions that include Windows and other Microsoft software for development and testing.",
+    gives: "Downloads and product keys for Windows, Windows Server, Office and more, plus monthly Azure credit and E5 sandbox eligibility",
+    cost: "Paid, usually through your employer",
+    eligibility: ["You're assigned a subscription by your organisation, or you buy one yourself."],
+    steps: [
+      "Sign in at my.visualstudio.com with the account your subscription is assigned to.",
+      "Open Downloads to get installers and Product Keys to claim keys.",
+      "Open Benefits to activate Azure credit and the Microsoft 365 Developer Program.",
+    ],
+    limits: "Software is licensed for designing, developing, testing and demonstrating your apps, not for everyday personal or production use.",
+    links: [{ label: "my.visualstudio.com", url: "https://my.visualstudio.com" }],
+  },
+  {
+    id: "windows-eval",
+    audience: "developers",
+    title: "Windows 11 Enterprise evaluation",
+    summary: "A free 90-day trial for testing in a virtual machine or on a spare PC.",
+    gives: "Windows 11 Enterprise or Enterprise LTSC, fully featured for 90 days",
+    cost: "Free",
+    eligibility: ["Intended for IT professionals. Registration is required."],
+    steps: [
+      "Go to the Microsoft Evaluation Center page for Windows 11 Enterprise and register.",
+      "Download the ISO (x64 or Arm64).",
+      "Install it in a virtual machine, such as Hyper-V on Windows Pro, rather than on your main PC.",
+    ],
+    limits: "Can't be converted to a full licence. Installing it on a PC can't be rolled back. When the 90 days end, the desktop turns black and the PC shuts down every hour.",
+    links: [{ label: "Evaluation Center", url: "https://www.microsoft.com/evalcenter/evaluate-windows-11-enterprise" }],
+    caution: "Microsoft's ready-made Windows 11 developer VMs have been unavailable since October 2024. The evaluation ISO is the official alternative.",
+  },
+
+  // Nonprofits
+  {
+    id: "nonprofits",
+    audience: "nonprofits",
+    title: "Microsoft for Nonprofits",
+    summary: "Discounted Microsoft 365 and Windows for registered charities and nonprofits.",
+    gives: "Microsoft 365 Business Basic and Business Premium, plus Windows 11 Pro upgrades and Azure credit, at nonprofit prices",
+    cost: "Discounted",
+    eligibility: ["A registered nonprofit or charity in an eligible country. Schools, hospitals and government bodies are usually excluded."],
+    steps: [
+      "Register your organisation at nonprofit.microsoft.com and wait for verification.",
+      "Once approved, choose offers from the nonprofit hub, or buy through TechSoup or a Microsoft partner.",
+    ],
+    limits: "Microsoft ended its free Business Premium and E1 grants on July 1, 2025. Discounted prices remain.",
+    links: [
+      { label: "Microsoft for Nonprofits", url: "https://nonprofit.microsoft.com" },
+      { label: "TechSoup", url: "https://www.techsoup.org" },
+    ],
+  },
+];
+
+/** Things people assume give them a licence, but don't. */
+export const notALicence = [
+  { title: "Windows Insider Program", text: "Gives you early builds, not a licence. Your PC still needs a valid Windows licence." },
+  { title: "Using the E5 developer sandbox for personal Office", text: "It's for building apps only. Personal use breaks the licence terms." },
+  { title: "Keys from auction sites and too-good-to-be-true shops", text: "Often volume or resold keys that Microsoft can deactivate later. Buy from Microsoft, your PC maker or an authorised retailer." },
+];

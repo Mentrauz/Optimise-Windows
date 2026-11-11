@@ -100,6 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               return <NavItem key={c.id} href={`/${c.id}`} icon={c.icon} label={c.name} count={hydrated && d > 0 ? `${d}/${ts.length}` : undefined} />;
             })}
             <div className="pane__sep" role="separator" />
+            <NavItem href="/tools" icon="tools" label="Optional tools" />
             <NavItem href="/avoid" icon="avoid" label="Leave these alone" />
           </nav>
         </aside>

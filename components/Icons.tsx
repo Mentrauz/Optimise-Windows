@@ -25,6 +25,10 @@ import {
   ShieldLockFilled,
   StorageRegular,
   StorageFilled,
+  ToolboxRegular,
+  ToolboxFilled,
+  ArrowDownloadRegular,
+  ArrowDownloadFilled,
 } from "@fluentui/react-icons";
 import type { Category } from "@/lib/content";
 
@@ -43,6 +47,8 @@ const map: Record<IconKey, { r: React.ElementType; f: React.ElementType }> = {
   updates: { r: ArrowSyncRegular, f: ArrowSyncFilled },
   network: { r: GlobeRegular, f: GlobeFilled },
   avoid: { r: ProhibitedRegular, f: ProhibitedFilled },
+  tools: { r: ToolboxRegular, f: ToolboxFilled },
+  download: { r: ArrowDownloadRegular, f: ArrowDownloadFilled },
 };
 
 export function CategoryIcon({

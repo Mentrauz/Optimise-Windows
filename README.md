@@ -22,6 +22,9 @@ Requires Node.js 20.9 or newer.
 | `app/layout.tsx` | Root layout, metadata, no-flash theme script. |
 | `app/page.tsx` | Home (hero, "Tune for" profile picker, recommendations, progress, categories). |
 | `app/[category]/page.tsx` | One statically generated page per category. |
+| `app/tools/page.tsx` | "Optional tools" — safe parts of O&O ShutUp10++ and Chris Titus Tech's WinUtil, plus official Windows/Office download and licensing links. Content lives in `tools` and `officialSources` in `lib/content.ts`. |
+| `components/LicenceSection.tsx` | "Legitimate ways to get a licence" on the tools page: audience filter and expandable cards (what you get, who qualifies, step-by-step sign-up, limits, official links). Content is `licencePrograms`, `audiences` and `notALicence` in `lib/content.ts`. |
+| `components/ToolCard.tsx` | Card for one third-party tool: official source, launch command, before-you-start steps, "Safe to use" vs "Skip these", undo and caution. |
 | `app/avoid/page.tsx` | "Leave these alone" — myths and risky tweaks we don't recommend. |
 | `components/AppShell.tsx` | Settings-app shell: title bar, search, NavigationView-style pane with progress ring, mobile overlay pane. |
 | `components/TweakCard.tsx` | Settings-card expander with Done toggle, Settings path, numbered steps, why/undo, caution InfoBar, "Open in Settings" deep link and copy buttons. |
@@ -40,6 +43,23 @@ Fonts use Segoe UI Variable on Windows and fall back to the system font elsewher
 - The site is independent and not affiliated with Microsoft; it deliberately avoids the Windows logo and Microsoft wallpapers.
 
 ## Changelog
+
+### 0.3.0 — 2026-11-11
+- Added a **Legitimate ways to get a licence** section (`#licences`) to the Optional tools page, with 9 programmes grouped by audience:
+  - Everyone: existing digital licence, Windows 10 → 11 upgrade, free Microsoft 365 on the web.
+  - Students & teachers: Azure for Students (Education Hub software), Office 365 Education (notes the A1 retirement Microsoft announced in November 2026).
+  - Developers & IT pros: Microsoft 365 Developer Program E5 sandbox (current eligibility rules and dev-only terms), Visual Studio subscriptions, Windows 11 Enterprise 90-day evaluation (and that the developer VMs have been unavailable since October 2024).
+  - Nonprofits: Microsoft for Nonprofits (donated grants ended July 1, 2025; discounts remain).
+- Added a "These don't give you a licence" list (Insider Program, personal use of the dev sandbox, grey-market keys).
+- Folded the developer-programmes line added to the activation-scripts note into a link to the new section.
+- Changed the "Activation, legitimately" card to "Licences, legitimately", linking to the new section.
+
+### 0.2.0 — 2026-11-11
+- Added an **Optional tools** page (`/tools`) covering O&O ShutUp10++ (recommended settings only) and Chris Titus Tech's Windows Utility (Install tab, a handful of Essential tweaks, repair tools), with explicit "Skip these" lists and undo steps.
+- Added a "Get Windows and Office the official way" section linking to Microsoft's own download, install and activation pages.
+- Added "Unofficial activation scripts and cracked keys" to the Leave these alone list. Activation scripts (e.g. MAS) are intentionally not covered.
+- Added Optional tools to the navigation pane and the home page category grid; new `tools` and `download` icons.
+- Renamed the "Built-in settings only" ground rule to "Built-in settings first" to reflect the optional tools.
 
 ### 0.1.0 — 2026-11-11
 - Created the Next.js 16 (App Router, TypeScript) project from scratch.

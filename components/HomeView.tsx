@@ -177,6 +177,20 @@ export function HomeView() {
             </Link>
           );
         })}
+        <Link href="/tools" className="tile">
+          <span className="tile__plate" style={{ background: "#4f6bed" }}>
+            <CategoryIcon icon="tools" size={22} />
+          </span>
+          <span>
+            <span className="t-body-strong" style={{ display: "block" }}>
+              Optional tools
+            </span>
+            <span className="t-caption muted">The safe parts of O&amp;O ShutUp10++ and WinUtil, plus official Windows and Office downloads.</span>
+          </span>
+          <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
+            For confident users <ArrowRight16Regular />
+          </span>
+        </Link>
         <Link href="/avoid" className="tile">
           <span className="tile__plate" style={{ background: "#c42b1c" }}>
             <CategoryIcon icon="avoid" size={22} />

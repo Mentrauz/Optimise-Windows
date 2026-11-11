@@ -6,6 +6,11 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 **Rule:** Always refer to this file before processing any request.
 
+## Git
+
+- Never autocommit. Do not run `git commit` unless the user explicitly asks for a commit in that request.
+- Do not push unless the user explicitly asks for it.
+
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
