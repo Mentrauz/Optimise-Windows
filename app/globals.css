@@ -283,14 +283,7 @@ button {
 }
 
 .app-mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: linear-gradient(135deg, #2b9bf4 0%, #0067c0 55%, #6a4fc8 100%);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35), 0 1px 2px rgba(0, 0, 0, 0.15);
+  display: block;
   flex: none;
 }
 
@@ -309,6 +302,26 @@ button {
   display: grid;
   grid-template-columns: var(--pane-w) minmax(0, 1fr);
   min-height: calc(100dvh - var(--titlebar-h));
+  transition: grid-template-columns var(--slow) var(--ease-decel);
+}
+
+/* Desktop: the title bar button collapses the sidebar to an icon rail.
+   Only widths, opacity and transforms change, so everything animates together. */
+@media (min-width: 861px) {
+  .shell[data-collapsed="true"] { grid-template-columns: 68px minmax(0, 1fr); }
+
+  .pane__ring { display: inline-flex; flex: none; transform-origin: left center; transition: transform var(--slow) var(--ease-decel); }
+  .pane__account { transition: padding var(--slow) var(--ease-decel); }
+  .pane__account-text,
+  .nav-item__label,
+  .nav-item__count { transition: opacity 150ms linear 100ms; } /* expanding: fade labels in once there's room */
+
+  .shell[data-collapsed="true"] .pane { scrollbar-width: none; }
+  .shell[data-collapsed="true"] .pane__account { padding-left: 1px; }
+  .shell[data-collapsed="true"] .pane__ring { transform: scale(0.75); }
+  .shell[data-collapsed="true"] .pane__account-text,
+  .shell[data-collapsed="true"] .nav-item__label,
+  .shell[data-collapsed="true"] .nav-item__count { opacity: 0; pointer-events: none; transition: opacity var(--fast) linear; } /* collapsing: fade out first */
 }
 
 .pane {
@@ -316,6 +329,7 @@ button {
   top: var(--titlebar-h);
   height: calc(100dvh - var(--titlebar-h));
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 4px 12px 24px 12px;
   scrollbar-width: thin;
 }
@@ -348,6 +362,7 @@ button {
   padding: 0 12px;
   border-radius: var(--r-control);
   color: var(--text-1);
+  white-space: nowrap;
   transition: background-color var(--fast) linear;
 }
 
@@ -441,7 +456,6 @@ button {
 .stack { display: flex; flex-direction: column; gap: 4px; }
 
 /* Mobile pane toggle */
-.btn.pane-toggle { display: none; }
 .pane-backdrop { display: none; }
 
 /* ──────────────────────────────────────────────────────────────
@@ -1094,17 +1108,22 @@ button {
 }
 
 .footer {
-  margin-top: 56px;
-  padding-top: 16px;
+  margin-top: 32px;
+  padding-top: 10px;
   border-top: 1px solid var(--stroke-divider);
   color: var(--text-3);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 16px;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 4px 16px;
   flex-wrap: wrap;
 }
+
+.footer__credits { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.footer__credits b { color: var(--text-2); font-weight: 600; }
+.footer__credits a { color: var(--text-2); }
+.footer__credits a:hover { color: var(--accent-text); text-decoration: underline; }
 
 /* Myth card */
 .myth {
@@ -1168,8 +1187,6 @@ button {
 
 @media (max-width: 860px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
-
-  .btn.pane-toggle { display: inline-flex; }
 
   .pane {
     position: fixed;
@@ -1241,7 +1258,12 @@ button {
    Optional tools page
    ────────────────────────────────────────────────────────────── */
 
-.tool { overflow: hidden; }
+.tool { overflow: hidden; scroll-margin-top: calc(var(--titlebar-h) + 16px); }
+
+.featureids { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.featureids li { display: grid; gap: 4px; }
+.featureids__cmd { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.featureids__cmd .code-pill { word-break: break-all; }
 
 .tool__head {
   display: grid;

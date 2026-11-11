@@ -29,6 +29,8 @@ import {
   ArrowDownloadFilled,
   SparkleRegular,
   SparkleFilled,
+  StarRegular,
+  StarFilled,
 } from "@fluentui/react-icons";
 import type { Category } from "@/lib/content";
 
@@ -49,6 +51,7 @@ const map: Record<IconKey, { r: React.ElementType; f: React.ElementType }> = {
   tools: { r: ToolboxRegular, f: ToolboxFilled },
   download: { r: ArrowDownloadRegular, f: ArrowDownloadFilled },
   features: { r: SparkleRegular, f: SparkleFilled },
+  programs: { r: StarRegular, f: StarFilled },
 };
 
 export function CategoryIcon({
@@ -65,11 +68,8 @@ export function CategoryIcon({
   return <Cmp fontSize={size} aria-hidden />;
 }
 
-/** Brand mark: a small accent tile with a gauge glyph (not the Windows logo). */
+/** Brand mark: the same icon as the browser tab favicon (app/icon.svg). */
 export function AppMark({ size = 20 }: { size?: number }) {
-  return (
-    <span className="app-mark" style={{ width: size, height: size, borderRadius: size / 4 }} aria-hidden>
-      <GaugeFilled fontSize={Math.round(size * 0.7)} />
-    </span>
-  );
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img className="app-mark" src="/icon.svg" width={size} height={size} alt="" aria-hidden />;
 }

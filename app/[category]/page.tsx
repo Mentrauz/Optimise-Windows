@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { categories, getCategory, type CategoryId } from "@/lib/content";
 import { CategoryView } from "@/components/CategoryView";
-import { Footer } from "@/components/HomeView";
+import { Footer } from "@/components/Footer";
 
 export const dynamicParams = false;
 

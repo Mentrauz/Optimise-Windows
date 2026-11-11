@@ -3,7 +3,7 @@ import Link from "next/link";
 import { featureChanges, featureGroups } from "@/lib/content";
 import { CategoryIcon } from "@/components/Icons";
 import { TweakCard } from "@/components/TweakCard";
-import { Footer } from "@/components/HomeView";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Optional feature changes",
@@ -37,6 +37,8 @@ export default function FeaturesPage() {
         <span>
           <b>Missing a setting?</b> Microsoft is rolling these out gradually, so some may not have reached your PC yet.
           Install pending updates in Windows Update, restart, and check again. Labels can vary slightly between builds.
+          If you&rsquo;re comfortable with the command line, you can switch some of them on early with{" "}
+          <Link className="link" href="/tools#vivetool">ViVeTool</Link>.
         </span>
       </div>
 

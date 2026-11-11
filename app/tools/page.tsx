@@ -4,14 +4,14 @@ import { officialSources, tools } from "@/lib/content";
 import { CategoryIcon } from "@/components/Icons";
 import { ToolCard } from "@/components/ToolCard";
 import { LicenceSection } from "@/components/LicenceSection";
-import { Footer } from "@/components/HomeView";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Optional tools",
-  description: "The safe parts of O&O ShutUp10++ and Chris Titus Tech's Windows Utility, official Windows and Office downloads, and every legitimate way to get a licence.",
+  description: "The safe parts of O&O ShutUp10++ and Chris Titus Tech's Windows Utility, how to use ViVeTool to unlock new features early, official Windows and Office downloads, and every legitimate way to get a licence.",
 };
 
-const tints: Record<string, string> = { shutup10: "#5C2E91", winutil: "#0063B1" };
+const tints: Record<string, string> = { shutup10: "#5C2E91", winutil: "#0063B1", vivetool: "#5D5A58" };
 
 export default function ToolsPage() {
   return (

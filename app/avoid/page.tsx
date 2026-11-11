@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { avoidList } from "@/lib/content";
 import { CategoryIcon } from "@/components/Icons";
-import { Footer } from "@/components/HomeView";
+import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Leave these alone",

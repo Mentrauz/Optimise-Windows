@@ -17,6 +17,7 @@ import { useAppState } from "./AppState";
 import { CategoryIcon } from "./Icons";
 import { ImpactMeter, ProgressRing, Segmented } from "./Controls";
 import { HeroArt } from "./HeroArt";
+import { Footer } from "./Footer";
 
 const principleIcons = [Settings20Regular, ArrowUndo20Regular, Person20Regular];
 
@@ -191,6 +192,20 @@ export function HomeView() {
             Make Windows feel better <ArrowRight16Regular />
           </span>
         </Link>
+        <Link href="/programs" className="tile">
+          <span className="tile__plate" style={{ background: "#9D5D00" }}>
+            <CategoryIcon icon="programs" size={22} />
+          </span>
+          <span>
+            <span className="t-body-strong" style={{ display: "block" }}>
+              Programs I recommend
+            </span>
+            <span className="t-caption muted">Cleaners, uninstallers, driver tools and a browser worth installing.</span>
+          </span>
+          <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
+            See my picks <ArrowRight16Regular />
+          </span>
+        </Link>
         <Link href="/tools" className="tile">
           <span className="tile__plate" style={{ background: "#4f6bed" }}>
             <CategoryIcon icon="tools" size={22} />
@@ -199,7 +214,7 @@ export function HomeView() {
             <span className="t-body-strong" style={{ display: "block" }}>
               Optional tools
             </span>
-            <span className="t-caption muted">The safe parts of O&amp;O ShutUp10++ and WinUtil, plus official Windows and Office downloads.</span>
+            <span className="t-caption muted">The safe parts of O&amp;O ShutUp10++, WinUtil and ViVeTool, plus official Windows and Office downloads.</span>
           </span>
           <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
             For confident users <ArrowRight16Regular />
@@ -226,11 +241,3 @@ export function HomeView() {
   );
 }
 
-export function Footer() {
-  return (
-    <footer className="footer">
-      <span>Steps are written for Windows 11 version 26H2. Most also apply to 25H2 and 24H2, where some names differ slightly.</span>
-      <span>An independent guide. Not affiliated with or endorsed by Microsoft.</span>
-    </footer>
-  );
-}

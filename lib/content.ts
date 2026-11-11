@@ -21,7 +21,7 @@ export interface Category {
   /** One-line description shown under the page title and on tiles. */
   blurb: string;
   /** Key used by <CategoryIcon /> */
-  icon: CategoryId | "home" | "avoid" | "tools" | "download" | "features";
+  icon: CategoryId | "home" | "avoid" | "tools" | "download" | "features" | "programs";
   /** Tile colour (WinUI-style icon plate). */
   tint: string;
 }
@@ -109,12 +109,54 @@ export const tweaks: Tweak[] = [
     steps: [
       "Select Start, then the Power button.",
       "Choose Restart rather than Shut down, especially after installing updates or drivers.",
+      "If you'd rather keep using Shut down, turn off Fast startup (next tweak) so it fully shuts down.",
     ],
-    why: "With Fast startup on, Shut down saves the system state to disk so it can boot quickly. Over days, that can carry along leaks and stuck drivers. A restart starts fresh.",
+    why: "With Fast startup on, Shut down doesn't fully shut down. It saves the system state to disk so the PC can boot quickly. Over days, that can carry along leaks and stuck drivers. A restart always starts fresh. With Fast startup off, Shut down also starts fresh, so you can use either.",
     undo: "Nothing to undo.",
     impact: "Medium",
     minutes: 1,
     for: [],
+  },
+  {
+    id: "fast-startup",
+    category: "performance",
+    title: "Turn off Fast startup",
+    summary: "Make Shut down a real shutdown, so drivers and apps start fresh every time.",
+    path: ["Control Panel", "Power Options", "Choose what the power buttons do"],
+    steps: [
+      "Press Win + R, type powercfg.cpl and press Enter.",
+      "Select Choose what the power buttons do in the left pane.",
+      "Select Change settings that are currently unavailable. Accept the admin prompt.",
+      "Under Shutdown settings, clear Turn on fast startup (recommended).",
+      "Select Save changes.",
+    ],
+    why: "Fast startup saves part of the system to disk when you shut down, so the next boot skips some work. That also carries over stuck drivers, memory leaks and half-applied updates, and can cause problems with dual boot, external drives and Wake-on-LAN. Turning it off gives a clean start every time. Boot time on an SSD is only a few seconds longer.",
+    undo: "Open the same page and select Turn on fast startup (recommended), then Save changes.",
+    impact: "Medium",
+    minutes: 1,
+    for: [],
+    command: { label: "Run", value: "powercfg.cpl" },
+    caution: "The Turn on fast startup box is missing if hibernation is off. In that case Fast startup is already off.",
+  },
+  {
+    id: "hibernation",
+    category: "performance",
+    title: "Turn off hibernation to free disk space",
+    summary: "Removes the hibernation file, which can take several gigabytes of your system drive.",
+    path: ["Terminal (Admin)", "powercfg"],
+    steps: [
+      "Right-click Start and choose Terminal (Admin).",
+      "Type powercfg /hibernate off and press Enter. Nothing is printed when it works.",
+      "To check, run powercfg /a. It should list Hibernate as not available.",
+      "No restart is needed. Windows removes the hibernation file straight away.",
+    ],
+    why: "Hibernation writes everything in memory to a hidden file called hiberfil.sys, usually 20% to 40% of your RAM. On a desktop that's always plugged in, you rarely need it. Turning it off frees that space. It also turns off Fast startup, which has its own tweak above.",
+    undo: "Run powercfg /hibernate on in Terminal (Admin). You can also run powercfg /hibernate /type reduced to keep Fast startup with a smaller file.",
+    impact: "Low",
+    minutes: 2,
+    for: ["desktop"],
+    command: { label: "In Terminal (Admin)", value: "powercfg /hibernate off" },
+    caution: "Leave hibernation on for laptops. It protects your work if the battery runs out during sleep. Turning it off also removes Hibernate from the Power menu.",
   },
   {
     id: "search-indexing",
@@ -1271,6 +1313,8 @@ export interface Tool {
   before: string[];
   use: ToolOption[];
   skip: ToolOption[];
+  /** Optional list of ready-to-copy commands, one per feature. */
+  featureIds?: { name: string; command: string; note: string }[];
   undo: string;
   caution?: string;
 }
@@ -1329,13 +1373,167 @@ export const tools: Tool[] = [
       { name: "Advanced tweaks (marked CAUTION)", note: "Removing OneDrive, Copilot and other components, or reverting Start, can cause side effects. Not needed for speed." },
       { name: "Set Services to Manual", note: "This is in the Standard preset, but the speed gain is tiny and it's the kind of bulk service change we advise against." },
       { name: "Disable Telemetry", note: "Required diagnostic data helps Windows deliver security fixes like the Secure Boot certificate update. Use the Privacy settings on this site instead." },
-      { name: "Disable Storage Sense and Disable Hibernation", note: "Both undo useful defaults. Leave them on, especially on laptops." },
+      { name: "Disable Storage Sense and Disable Hibernation", note: "Both undo useful defaults. Leave Storage Sense on. Leave hibernation on too, especially on laptops. On a desktop, the Performance page shows how to turn it off yourself." },
       { name: "Updates tab › disabling updates", note: "Only for a short pause while a known bad update is fixed. Never leave updates off." },
       { name: "Ultimate Performance power plan", note: "Use the Best performance power mode instead. Ultimate Performance mostly just stops your CPU from idling." },
       { name: "Win11 Creator (custom ISO)", note: "A stripped-down Windows image is harder to support and update. Use Microsoft's own media." },
     ],
     undo: "Select the tweaks on the Tweaks tab and choose Undo Selected Tweaks. For anything else, use System Restore to go back to the restore point.",
     caution: "The script needs admin rights, so it can change anything on your PC. Only use the official command, and don't select a whole preset without reading each item.",
+  },
+  {
+    id: "vivetool",
+    name: "ViVeTool",
+    maker: "thebookisclosed (open source)",
+    tagline: "Switches on Windows features that Microsoft is still rolling out. Use it only if a setting on the Optional feature changes page is missing on your PC.",
+    cost: "Free, open source (GPL-3.0)",
+    kind: "Command-line app, no install",
+    source: { label: "github.com/thebookisclosed/ViVe/releases", url: "https://github.com/thebookisclosed/ViVe/releases" },
+    launch: { label: "In Command Prompt (Admin)", value: "cd C:\\ViVeTool" },
+    before: [
+      "Download the latest zip (v0.3.4 at the time of writing) from the official GitHub releases page only. Choose IntelAmd for most PCs, or Snapdragon for Arm64 PCs.",
+      "Extract it to a simple folder such as C:\\ViVeTool.",
+      "Create a restore point first: search for Create a restore point, then select Create.",
+      "Right-click Start, choose Terminal (Admin) and open Command Prompt, or search for Command Prompt and select Run as administrator.",
+      "Type cd C:\\ViVeTool, then run one command from the list below. A working command prints Successfully set feature configuration(s).",
+      "Restart your PC, then check Settings for the new option.",
+    ],
+    use: [
+      { name: "One feature at a time", note: "Enable a single feature, restart and check it works before trying the next. That way you know which one changed what." },
+      { name: "Only features Microsoft is already rolling out", note: "The IDs below are for options Microsoft has already shipped to some PCs. They just haven't reached yours yet." },
+      { name: "vivetool /query /id:<ID>", note: "Shows whether a feature is currently on, off or default. Handy for checking before and after." },
+      { name: "Re-check after big Windows updates", note: "Once Microsoft turns a feature on for everyone, its ID may stop doing anything. That's fine. Disable it and use the normal setting." },
+    ],
+    skip: [
+      { name: "IDs from videos, forums or comment sections", note: "Many are for old or Insider builds and can switch on half-finished features that crash apps or Settings." },
+      { name: "Enabling everything at once", note: "Bundle IDs and long lists make it impossible to tell what broke if something goes wrong." },
+      { name: "Work or school PCs", note: "Managed devices may block it, and changes can conflict with your organisation's policies." },
+      { name: "Unofficial downloads and GUI wrappers", note: "Only the GitHub release is the real tool. Re-packaged copies on other sites can include malware." },
+    ],
+    featureIds: [
+      { name: "Start menu: size and sections", command: "vivetool /enable /id:61754985", note: "Adds Start menu size and the Pinned, Recent and All toggles. Some builds also use 61225604,61596616,61596617,61596618,61596619 together with it." },
+      { name: "Taskbar: position (top, left, right)", command: "vivetool /enable /id:59213768", note: "Adds Taskbar position under Taskbar behaviors." },
+      { name: "Taskbar: smaller size", command: "vivetool /enable /id:61090762", note: "Adds the Small option under Taskbar size." },
+      { name: "Right-click menu customisation", command: "vivetool /enable /id:60813048", note: "Adds Settings › Personalization › Context menu. If it doesn't appear, try 60813048,49453572 instead." },
+      { name: "Search: turn off web results", command: "vivetool /enable /id:61267302,61344081,61482515,61532758,61760679", note: "Adds the web results and Store suggestions switches in Privacy & security › Search. Sources disagree on this one, so some builds may use 62762248 instead." },
+      { name: "Modern Run dialog", command: "vivetool /enable /id:57156807", note: "On some 25H2 builds, use 58381341,58527096,57156807,57259990." },
+      { name: "Xbox mode", command: "vivetool /enable /id:59765208,60761441", note: "Unlocks the Xbox mode switch in Settings › Gaming and its Task View entry." },
+    ],
+    undo: "Run the same command with /disable instead of /enable, then restart. To remove all your changes for a feature, run vivetool /reset /id:<ID>. Run vivetool /fixpriority afterwards so Windows' own rollout takes over again. The restore point is your fallback.",
+    caution: "Not supported by Microsoft, and IDs are tied to specific builds. They change often and sources disagree on some of them, so if nothing appears after a restart, that feature isn't in your build yet. Don't expect a fix from Microsoft if a hidden feature misbehaves.",
+  },
+];
+
+// ───────────── Programs recommended by the site author ─────────────
+
+export interface RecommendedProgram {
+  id: string;
+  name: string;
+  maker: string;
+  tagline: string;
+  cost: string;
+  /** Who it suits. */
+  level: string;
+  source: { label: string; url: string };
+  why: string;
+  steps: string[];
+  undo: string;
+  caution?: string;
+}
+
+export const recommendedPrograms: RecommendedProgram[] = [
+  {
+    id: "bleachbit",
+    name: "BleachBit",
+    maker: "BleachBit (open source)",
+    tagline: "A cleaner for temporary files, caches, logs and browser leftovers, with a preview before anything is deleted.",
+    cost: "Free, open source (GPL-3.0)",
+    level: "Everyone, with care",
+    source: { label: "bleachbit.org", url: "https://www.bleachbit.org" },
+    why: "It goes deeper than Storage Sense and shows you exactly what it will remove. It works best in Safe Mode, where fewer files are in use by Windows and other apps, so more of them can be cleaned.",
+    steps: [
+      "Download the installer from bleachbit.org only.",
+      "To run it in Safe Mode, go to Settings › System › Recovery, select Restart now next to Advanced startup, then Troubleshoot › Advanced options › Startup Settings › Restart, and press 4 (or F4). Sign in with your password. A PIN may not work in Safe Mode.",
+      "Open BleachBit and tick only the items you want. Start with System and your browsers' caches.",
+      "Select Preview first and read the list. Then select Clean.",
+      "Restart normally when you're done.",
+    ],
+    undo: "Cleaned files can't be restored. They're temporary files, which Windows and your apps recreate as needed. Don't clean anything you haven't previewed.",
+    caution: "Leave passwords, saved form data and cookies unticked unless you want to be signed out of sites. Don't use the shred or wipe free space options on an SSD. They add wear and don't make deleted files safer to remove.",
+  },
+  {
+    id: "revo-uninstaller",
+    name: "Revo Uninstaller",
+    maker: "VS Revo Group",
+    tagline: "Removes an app the normal way, then scans for the files and registry entries it left behind.",
+    cost: "Free edition, or Pro (paid)",
+    level: "Everyone",
+    source: { label: "revouninstaller.com", url: "https://www.revouninstaller.com" },
+    why: "Windows' own uninstall often leaves folders, settings and background tasks behind. Revo cleans those up. If you use it regularly, Pro is worth paying for. It adds Forced Uninstall for broken or half-removed apps, and install monitoring that tracks everything a new app changes so it can be removed completely later.",
+    steps: [
+      "Download Revo from revouninstaller.com. If you want Pro, buy a licence from Revo directly, and it comes with a free trial.",
+      "Select the app you want to remove, then Uninstall. Revo creates a restore point first.",
+      "When the app's own uninstaller finishes, choose the Moderate scan mode, then Scan.",
+      "Review the leftover registry entries and files. Delete only what's listed as belonging to that app.",
+    ],
+    undo: "Use the restore point Revo created, or System Restore, to go back. Reinstall the app from its website or the Microsoft Store.",
+    caution: "Avoid the Advanced scan mode unless you know what the entries are. It can list things other programs still use. Pro is a paid product. Buy it from Revo's own site and avoid cracked copies.",
+  },
+  {
+    id: "ddu",
+    name: "Display Driver Uninstaller (DDU)",
+    maker: "Wagnardsoft",
+    tagline: "Fully removes graphics drivers so you can start fresh. Meant for fixing problems and switching graphics cards.",
+    cost: "Free (donations welcome)",
+    level: "Some experience",
+    source: { label: "wagnardsoft.com", url: "https://www.wagnardsoft.com" },
+    why: "Normal driver updates can leave old files that cause crashes, black screens or game stutter. DDU removes NVIDIA, AMD and Intel graphics drivers completely, so the next install is clean. It's the right tool when you're changing graphics card brands or fixing a driver that won't behave.",
+    steps: [
+      "Download the new graphics driver from NVIDIA, AMD or Intel first, because DDU leaves you without one.",
+      "Download DDU from wagnardsoft.com and extract it.",
+      "Boot into Safe Mode (Settings › System › Recovery › Advanced startup › Troubleshoot › Advanced options › Startup Settings › Restart, then 4 or F4). Sign in with your password, because a PIN may not work.",
+      "Run DDU, choose your GPU brand, then select Clean and restart.",
+      "After the restart, install the driver you downloaded.",
+    ],
+    undo: "Nothing to undo. Install a graphics driver again, from the maker's site or from Windows Update › Advanced options › Optional updates.",
+    caution: "Don't use it for routine updates. NVIDIA, AMD and Intel installers already do a clean install. If you have just one display, expect a low-resolution screen until the new driver is installed.",
+  },
+  {
+    id: "nvcleanstall",
+    name: "NVCleanstall",
+    maker: "TechPowerUp",
+    tagline: "Lets you choose exactly which parts of an NVIDIA driver to install, and strips out telemetry and extras.",
+    cost: "Free",
+    level: "Professionals only",
+    source: { label: "techpowerup.com/download/techpowerup-nvcleanstall", url: "https://www.techpowerup.com/download/techpowerup-nvcleanstall/" },
+    why: "NVIDIA's installer bundles components many people never use. NVCleanstall builds a slimmer driver package with only the parts you pick, and can apply tweaks such as disabling Multiplane Overlay. It's for people who already know what each NVIDIA component does.",
+    steps: [
+      "Download it only from TechPowerUp.",
+      "Create a restore point first.",
+      "Let it fetch the driver version you want, or point it to one you downloaded.",
+      "On the components screen, turn off only what you're sure you don't need. Leave the display driver and anything games or capture tools depend on.",
+      "Install, then restart.",
+    ],
+    undo: "Reinstall the full driver from NVIDIA, or use DDU and then NVIDIA's normal installer. A restore point is your fallback.",
+    caution: "Removing the wrong component can break things. For example, removing Virtual Audio breaks ShadowPlay. It's modifying NVIDIA's installer, so it isn't supported by NVIDIA. Skip it if you're not sure.",
+  },
+  {
+    id: "brave",
+    name: "Brave Browser",
+    maker: "Brave Software",
+    tagline: "A fast Chromium-based browser that blocks ads and trackers by default.",
+    cost: "Free",
+    level: "Everyone",
+    source: { label: "brave.com/download", url: "https://brave.com/download" },
+    why: "Blocking ads and trackers out of the box means pages load faster and send less data about you, with no extensions to install. It works with Chrome extensions, and you can import your bookmarks and passwords.",
+    steps: [
+      "Download Brave from brave.com only and install it.",
+      "When asked, import your bookmarks and settings from your current browser.",
+      "Open Settings and trim what you don't use: Brave Rewards, Wallet and Leo in the left menu, and Show Brave Rewards in the address bar under Appearance.",
+      "Keep Shields turned on. Select the lion icon in the address bar if a site breaks, and turn Shields off for just that site.",
+    ],
+    undo: "Uninstall it from Settings › Apps › Installed apps. Your bookmarks stay in your old browser.",
+    caution: "Brave ships with crypto and AI features, which you can turn off, but some icons may remain. Settings and menu names change between versions.",
   },
 ];
 

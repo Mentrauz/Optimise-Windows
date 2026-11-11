@@ -112,6 +112,24 @@ export function ToolCard({ tool, tint }: { tool: Tool; tint: string }) {
         </section>
       </div>
 
+      {tool.featureIds && (
+        <div className="tool__row">
+          <h3 className="tool__h">Commands for the new features</h3>
+          <ul className="featureids">
+            {tool.featureIds.map((f) => (
+              <li key={f.name}>
+                <b>{f.name}</b>
+                <span className="muted t-caption">{f.note}</span>
+                <span className="featureids__cmd">
+                  <code className="code-pill">{f.command}</code>
+                  <CopyCommand value={f.command} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="tool__row">
         <h3 className="tool__h" style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <ArrowUndo16Regular /> To undo
