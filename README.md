@@ -39,7 +39,7 @@ Fonts use Segoe UI Variable on Windows and fall back to the system font elsewher
 ## Notes
 
 - "Open in Settings" buttons use `ms-settings:` links, so they only work when the site is opened on a Windows PC.
-- Steps are written for Windows 11 24H2.
+- Steps are written for Windows 11 26H2. Where a setting was renamed or moved since 24H2, the step names the older location too.
 - The site is independent and not affiliated with Microsoft; it deliberately avoids the Windows logo and Microsoft wallpapers.
 
 ## Changelog

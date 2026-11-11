@@ -7,7 +7,6 @@ export type Impact = "High" | "Medium" | "Low";
 export type CategoryId =
   | "performance"
   | "startup"
-  | "visuals"
   | "storage"
   | "power"
   | "gaming"
@@ -22,7 +21,7 @@ export interface Category {
   /** One-line description shown under the page title and on tiles. */
   blurb: string;
   /** Key used by <CategoryIcon /> */
-  icon: CategoryId | "home" | "avoid" | "tools" | "download";
+  icon: CategoryId | "home" | "avoid" | "tools" | "download" | "features";
   /** Tile colour (WinUI-style icon plate). */
   tint: string;
 }
@@ -51,7 +50,6 @@ export interface Tweak {
 export const categories: Category[] = [
   { id: "performance", name: "Performance", blurb: "Find what's slowing you down and give Windows the right power settings.", icon: "performance", tint: "#0078D4" },
   { id: "startup", name: "Startup & apps", blurb: "Fewer apps launching at sign-in means a faster, quieter PC.", icon: "startup", tint: "#8764B8" },
-  { id: "visuals", name: "Visual effects", blurb: "Trade a little polish for snappier windows on older hardware.", icon: "visuals", tint: "#C239B3" },
   { id: "storage", name: "Storage", blurb: "Let Windows tidy up after itself and keep room to breathe.", icon: "storage", tint: "#00B294" },
   { id: "power", name: "Power & battery", blurb: "Get more hours out of a laptop without making it feel slow.", icon: "power", tint: "#498205" },
   { id: "gaming", name: "Gaming", blurb: "Small, safe settings that help games run smoother.", icon: "gaming", tint: "#107C10" },
@@ -74,6 +72,7 @@ export const tweaks: Tweak[] = [
       "On Processes, select the CPU or Memory column to sort by usage.",
       "If one app is always near the top and you don't need it open, close it or remove it from startup.",
       "Open Startup apps in the left pane to see each app's Startup impact.",
+      "On PCs with an NPU, right-click a column heading and add NPU to see AI workloads too.",
     ],
     why: "Most slowdowns come from one or two specific apps, not from Windows itself. Knowing which ones tells you where the other tweaks will matter.",
     undo: "Nothing to undo. This is a read-only check.",
@@ -122,10 +121,11 @@ export const tweaks: Tweak[] = [
     category: "performance",
     title: "Use Classic search indexing",
     summary: "Index your libraries and desktop instead of the whole PC.",
-    path: ["Settings", "Privacy & security", "Searching Windows"],
+    path: ["Settings", "Privacy & security", "Search"],
     steps: [
-      "Open Settings and go to Privacy & security › Searching Windows.",
+      "Open Settings and go to Privacy & security › Search (called Searching Windows on older versions).",
       "Under Find my files, choose Classic.",
+      "Leave Automatically find additional relevant locations on. It indexes only the folders you use most, so search still finds your files.",
       "Optionally, select Customize search locations to add folders you search often.",
     ],
     why: "Enhanced indexing scans every drive in the background. Classic covers Documents, Pictures, Music and Desktop, which is where most people search, with far less disk activity.",
@@ -134,6 +134,26 @@ export const tweaks: Tweak[] = [
     minutes: 1,
     for: ["laptop"],
     deepLink: "ms-settings:cortana-windowssearch",
+  },
+
+  {
+    id: "end-task",
+    category: "performance",
+    title: "Add End task to the taskbar",
+    summary: "Close a frozen app from its taskbar button without opening Task Manager.",
+    path: ["Settings", "System", "Advanced"],
+    steps: [
+      "Open Settings and go to System › Advanced (called For developers on older versions).",
+      "Turn on End task.",
+      "When an app freezes, right-click its taskbar button and select End task.",
+    ],
+    why: "A frozen app can keep using CPU and memory. End task closes it immediately, the same as ending it in Task Manager.",
+    undo: "Turn End task off.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:developers",
+    caution: "Anything unsaved in the app is lost, so only use it when the app has stopped responding.",
   },
 
   // ───────────── Startup & apps ─────────────
@@ -212,63 +232,6 @@ export const tweaks: Tweak[] = [
     minutes: 1,
     for: ["laptop"],
     command: { label: "Paste in Edge", value: "edge://settings/system" },
-  },
-
-  // ───────────── Visual effects ─────────────
-  {
-    id: "transparency-animation",
-    category: "visuals",
-    title: "Turn off transparency and animation effects",
-    summary: "Solid surfaces and instant transitions are lighter on older graphics.",
-    path: ["Settings", "Accessibility", "Visual effects"],
-    steps: [
-      "Open Settings and go to Accessibility › Visual effects.",
-      "Turn off Transparency effects.",
-      "Turn off Animation effects.",
-    ],
-    why: "Translucent materials and animations are drawn by the GPU. On integrated graphics or older PCs, turning them off makes windows and menus feel quicker.",
-    undo: "Turn both switches back on.",
-    impact: "Medium",
-    minutes: 1,
-    for: ["laptop"],
-    deepLink: "ms-settings:easeofaccess-visualeffects",
-    caution: "Windows will look flatter. On modern hardware the speed difference is small, so only do this if things feel sluggish.",
-  },
-  {
-    id: "performance-options",
-    category: "visuals",
-    title: "Trim effects in Performance Options",
-    summary: "Keep the useful effects, drop the fades and slides.",
-    path: ["System Properties", "Advanced", "Performance", "Settings"],
-    steps: [
-      "Press Win + R, type SystemPropertiesPerformance and press Enter.",
-      "Choose Custom.",
-      "Clear Animate windows when minimizing and maximizing, Fade or slide menus into view, Fade or slide ToolTips into view, and Fade out menu items after clicking.",
-      "Keep Show thumbnails instead of icons and Smooth edges of screen fonts selected, then select Apply.",
-    ],
-    why: "These classic effects add small delays to everyday actions. Removing them makes the desktop respond instantly, while keeping text sharp and previews useful.",
-    undo: "Choose Let Windows choose what's best for my computer, then Apply.",
-    impact: "Low",
-    minutes: 2,
-    for: [],
-    command: { label: "Run", value: "SystemPropertiesPerformance" },
-  },
-  {
-    id: "widgets",
-    category: "visuals",
-    title: "Hide Widgets from the taskbar",
-    summary: "Stops the widgets board from loading news and weather in the background.",
-    path: ["Settings", "Personalization", "Taskbar", "Taskbar items"],
-    steps: [
-      "Open Settings and go to Personalization › Taskbar.",
-      "Under Taskbar items, turn off Widgets.",
-    ],
-    why: "The widgets board refreshes its feed in the background. If you never use it, hiding it saves a little memory and network.",
-    undo: "Turn Widgets back on.",
-    impact: "Low",
-    minutes: 1,
-    for: [],
-    deepLink: "ms-settings:taskbar",
   },
 
   // ───────────── Storage ─────────────
@@ -572,7 +535,7 @@ export const tweaks: Tweak[] = [
     id: "privacy-general",
     category: "privacy",
     title: "Turn off ad personalization and suggestions",
-    summary: "Four switches that limit ad tracking and suggested content.",
+    summary: "Three switches that limit ad tracking and suggested content.",
     path: ["Settings", "Privacy & security", "General"],
     steps: [
       "Open Settings and go to Privacy & security › General.",
@@ -628,15 +591,16 @@ export const tweaks: Tweak[] = [
   {
     id: "search-permissions",
     category: "privacy",
-    title: "Tidy up search permissions",
-    summary: "Keep search local and turn off highlights in the search box.",
-    path: ["Settings", "Privacy & security", "Search permissions"],
+    title: "Keep search on your PC",
+    summary: "Turn off web results, Store suggestions and highlights in the search box.",
+    path: ["Settings", "Privacy & security", "Search"],
     steps: [
-      "Open Settings and go to Privacy & security › Search permissions.",
+      "Open Settings and go to Privacy & security › Search (called Search permissions on older versions).",
+      "Under Show suggested search results, turn off web results and Microsoft Store suggestions. If you don't see this section yet, it's still rolling out to your PC.",
       "Under History, turn off Search history on this device if you don't want it.",
       "Under More settings, turn off Show search highlights.",
     ],
-    why: "Search highlights load trending content into the search pane. Turning it off makes search simpler and faster to open.",
+    why: "With web results on, what you type is sent to Bing. Turning web results, Store suggestions and highlights off keeps search on your own apps, settings and files, and makes it simpler and faster to open.",
     undo: "Turn the switches back on.",
     impact: "Low",
     minutes: 1,
@@ -686,10 +650,12 @@ export const tweaks: Tweak[] = [
     category: "notifications",
     title: "Remove tips and promotions from Start",
     summary: "Keep Start focused on your apps and files.",
-    path: ["Settings", "Personalization", "Start"],
+    path: ["Settings", "Personalization", "Start", "Recent"],
     steps: [
       "Open Settings and go to Personalization › Start.",
-      "Turn off Show recommendations for tips, shortcuts, new apps, and more.",
+      "To keep recent files but drop the promotions, expand Recent and clear Show recommendations and promotional content.",
+      "Or turn off Recent to hide the whole section. Recent was called Recommended in older versions.",
+      "On older versions, turn off Show recommendations for tips, shortcuts, new apps, and more instead.",
       "Optionally, turn off Show account-related notifications.",
     ],
     why: "Start then shows only what you put there, which makes it quicker to scan.",
@@ -815,7 +781,7 @@ export const tweaks: Tweak[] = [
     path: ["Settings", "Windows Update", "Advanced options", "Optional updates"],
     steps: [
       "Open Settings and go to Windows Update › Advanced options › Optional updates.",
-      "Expand Driver updates and install any for your graphics, chipset or Wi-Fi.",
+      "Expand Driver updates and install any for your graphics, chipset or Wi-Fi. On newer versions, optional drivers may show under Available updates on the main Windows Update page instead.",
       "For gaming, get graphics drivers directly from NVIDIA, AMD or Intel.",
     ],
     why: "Graphics and chipset drivers often include performance and power fixes that Windows Update doesn't install automatically.",
@@ -920,6 +886,286 @@ export const tweaks: Tweak[] = [
   },
 ];
 
+/** UI personalisation options added in 25H2/26H2. Same shape as a tweak, without a category. */
+export type FeatureGroup = "Start menu" | "Taskbar" | "Search & menus" | "Visual effects" | "Comfort & accessibility" | "Gaming";
+export type FeatureChange = Omit<Tweak, "category"> & { group: FeatureGroup };
+
+/** Display order of the groups on the Optional feature changes page. */
+export const featureGroups: { name: FeatureGroup; blurb: string }[] = [
+  { name: "Start menu", blurb: "Make Start smaller and show only what you use." },
+  { name: "Taskbar", blurb: "Move it, shrink it and drop what you don't use." },
+  { name: "Search & menus", blurb: "Keep search local and trim the right-click menu." },
+  { name: "Visual effects", blurb: "Trade a little polish for snappier windows on older hardware." },
+  { name: "Comfort & accessibility", blurb: "Easier on the eyes for long sessions." },
+  { name: "Gaming", blurb: "A cleaner, console-style way to play." },
+];
+
+export const featureChanges: FeatureChange[] = [
+  {
+    id: "start-size",
+    group: "Start menu",
+    title: "Make the Start menu smaller",
+    summary: "Pick a compact Start menu instead of one that fills a third of the screen.",
+    path: ["Settings", "Personalization", "Start", "Start menu size"],
+    steps: [
+      "Open Settings and go to Personalization › Start.",
+      "Set Start menu size to Small. Choose Large if you'd rather see more apps at once, or Automatic to let Windows decide for your screen.",
+    ],
+    why: "The redesigned Start menu adapts to your screen size, which can make it very tall on a big monitor. Small keeps it compact and out of the way.",
+    undo: "Set Start menu size back to Automatic.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:personalization-start",
+    caution: "Rolling out gradually through 2026 updates, so this may not be on your PC yet.",
+  },
+  {
+    id: "start-sections",
+    group: "Start menu",
+    title: "Show only the Start sections you use",
+    summary: "Turn Pinned, Recent and All on or off independently, and pick how apps are listed.",
+    path: ["Settings", "Personalization", "Start"],
+    steps: [
+      "Open Settings and go to Personalization › Start.",
+      "Turn off any of Pinned, Recent or All that you never use. Recent was called Recommended on older versions.",
+      "In the Start menu, open All and choose Category or Grid view if the long alphabetical list is hard to scan.",
+    ],
+    why: "Each section you hide leaves more room for the ones you use. Hiding Recent also stops Start from showing your recent files and apps.",
+    undo: "Turn the section back on.",
+    impact: "Low",
+    minutes: 2,
+    for: [],
+    deepLink: "ms-settings:personalization-start",
+    caution: "Rolling out gradually through 2026 updates. If you don't see these switches yet, install pending updates and check again later.",
+  },
+  {
+    id: "start-hide-name",
+    group: "Start menu",
+    title: "Hide your name and picture in Start",
+    summary: "Useful when you share your screen or use a shared PC.",
+    path: ["Settings", "Personalization", "Start"],
+    steps: [
+      "Open Settings and go to Personalization › Start.",
+      "Turn on the option to hide your name and profile picture. Its wording varies by build, so look for a switch that mentions your name or profile picture.",
+    ],
+    why: "Your account name and picture are shown at the bottom of Start. Hiding them keeps your identity off screen recordings and shared screens.",
+    undo: "Turn the option off.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:personalization-start",
+    caution: "Sources describe this option differently, and it may not have reached every PC yet.",
+  },
+  {
+    id: "taskbar-position",
+    group: "Taskbar",
+    title: "Move the taskbar to the top, left or right",
+    summary: "Windows 11 can finally put the taskbar somewhere other than the bottom again.",
+    path: ["Settings", "Personalization", "Taskbar", "Taskbar behaviors", "Taskbar position"],
+    steps: [
+      "Open Settings and go to Personalization › Taskbar.",
+      "Expand Taskbar behaviors.",
+      "Set Taskbar position to Bottom, Top, Left or Right. The change applies straight away.",
+      "Use the alignment option next to it to place icons at the start or centre of the bar.",
+    ],
+    why: "A side taskbar saves vertical space on widescreen monitors and laptops, and a top taskbar suits people who prefer menus at the top of the screen.",
+    undo: "Set Taskbar position back to Bottom.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:taskbar",
+    caution: "You can't drag the taskbar to another edge. Change it in Settings. It arrived with the September 2026 update, so install pending updates if you don't see it.",
+  },
+  {
+    id: "taskbar-size",
+    group: "Taskbar",
+    title: "Use a smaller taskbar",
+    summary: "Shrinks both the icons and the height of the taskbar.",
+    path: ["Settings", "Personalization", "Taskbar", "Taskbar behaviors", "Taskbar size"],
+    steps: [
+      "Open Settings and go to Personalization › Taskbar.",
+      "Expand Taskbar behaviors.",
+      "Set Taskbar size to Small.",
+    ],
+    why: "More room for your apps, especially on small laptop screens. Start, Search and the system tray stay available.",
+    undo: "Set Taskbar size back to the default.",
+    impact: "Low",
+    minutes: 1,
+    for: ["laptop"],
+    deepLink: "ms-settings:taskbar",
+    caution: "The smaller size only applies when the taskbar is at the top or bottom, not on the sides.",
+  },
+  {
+    id: "search-web-results",
+    group: "Search & menus",
+    title: "Turn off web results and Store suggestions in search",
+    summary: "Make Windows search show only your apps, settings and files.",
+    path: ["Settings", "Privacy & security", "Search", "Show suggested search results"],
+    steps: [
+      "Open Settings and go to Privacy & security › Search.",
+      "Under Show suggested search results, turn off web results.",
+      "Turn off Microsoft Store suggestions too.",
+      "Under More settings, turn off Show search highlights.",
+    ],
+    why: "With both off, search is limited to items on your PC, results are cleaner, and what you type is no longer sent to Bing for web results.",
+    undo: "Turn the switches back on.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:search-permissions",
+    caution: "Rolling out gradually. If your organisation sets this by Group Policy or Intune, the policy overrides these switches.",
+  },
+  {
+    id: "context-menu",
+    group: "Search & menus",
+    title: "Clean up the right-click menu",
+    summary: "Hide the commands and app entries you never use in File Explorer's context menu.",
+    path: ["Settings", "Personalization", "Context menu"],
+    steps: [
+      "Right-click any file or folder and choose Customize menu at the bottom, or open Settings › Personalization › Context menu.",
+      "Under File actions, turn off built-in commands you don't use, such as Send to or Create shortcut.",
+      "Under App actions, turn off entries added by apps, or move them into a submenu so they don't crowd the main menu.",
+      "Optionally, show Cut, Copy, Paste, Rename, Delete and Share as text instead of icons, and move Properties to the bottom.",
+    ],
+    why: "Every app that adds an entry makes the menu do extra work when it opens. A shorter menu opens faster and is easier to scan.",
+    undo: "Turn the entries back on in the same page.",
+    impact: "Low",
+    minutes: 3,
+    for: [],
+    caution: "Still rolling out and may not be on your PC yet. Turning an entry off only hides it. The app stays installed. Don't hide commands you use every day.",
+  },
+  {
+    id: "run-dialog",
+    group: "Search & menus",
+    title: "Try the modern Run dialog",
+    summary: "A Windows 11-style Run box that matches the rest of the system.",
+    path: ["Settings", "System", "Advanced", "Run dialog"],
+    steps: [
+      "Open Settings and go to System › Advanced.",
+      "Turn on Run dialog.",
+      "Press Win + R to try it.",
+    ],
+    why: "It's a cosmetic upgrade, so Run looks and behaves like the rest of Windows 11, including dark mode.",
+    undo: "Turn Run dialog off.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:developers",
+    caution: "Reported by a single source and may be limited to some builds. Skip it if you don't see the switch.",
+  },
+  {
+    id: "xbox-mode",
+    group: "Gaming",
+    title: "Try Xbox mode for a console-style full-screen experience",
+    summary: "A controller-friendly home screen that replaces the desktop while you play.",
+    path: ["Settings", "Gaming", "Xbox mode"],
+    steps: [
+      "Open Settings and go to Gaming › Xbox mode.",
+      "Turn on Enable Xbox mode.",
+      "Optionally, turn on Enter Xbox mode on startup, or Show Xbox mode in Task View.",
+      "Press Win + F11 to switch between Xbox mode and the normal desktop.",
+    ],
+    why: "Xbox mode hides the desktop clutter and opens games from one clean screen, which suits a PC connected to a TV or used with a controller.",
+    undo: "Turn Enable Xbox mode off, or press Win + F11 to return to the desktop.",
+    impact: "Low",
+    minutes: 2,
+    for: ["gaming"],
+    caution: "Needs Windows 11 24H2 or later and is only available in supported markets. It's a gradual rollout, so update Windows and the Xbox app from the Microsoft Store if you don't see it. This is separate from Game Mode.",
+  },
+  {
+    id: "screen-tint",
+    group: "Comfort & accessibility",
+    title: "Tint the screen to reduce eye strain",
+    summary: "A built-in colour overlay that softens bright whites. No extra app needed.",
+    path: ["Settings", "Accessibility", "Screen Tint"],
+    steps: [
+      "Open Settings and go to Accessibility › Screen Tint.",
+      "Turn on Screen Tint and choose one of the presets, or make a custom tint.",
+      "Drag the strength slider until the screen feels comfortable.",
+    ],
+    why: "A warm tint takes the harshness off bright white pages, which can make long sessions or late-night use easier on the eyes.",
+    undo: "Turn Screen Tint off.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    caution: "Screen Tint can't be used at the same time as Color filters. Turn Color filters off first if you use them.",
+  },
+  {
+    id: "magnifier-zoom",
+    group: "Comfort & accessibility",
+    title: "Set Magnifier's zoom the way you like it",
+    summary: "Type an exact zoom level, change the zoom steps, and keep a separate zoom per monitor.",
+    path: ["Settings", "Accessibility", "Magnifier"],
+    steps: [
+      "Open Settings and go to Accessibility › Magnifier.",
+      "Turn on Magnifier, or press Win + Plus.",
+      "In the Magnifier window, enter a specific zoom percentage and adjust the zoom increment.",
+      "With more than one monitor in Extend mode, each display keeps its own zoom level.",
+    ],
+    why: "Small text is easier to read when you can zoom to an exact level instead of stepping through preset sizes.",
+    undo: "Turn Magnifier off, or press Win + Esc.",
+    impact: "Low",
+    minutes: 2,
+    for: [],
+    deepLink: "ms-settings:easeofaccess-magnifier",
+  },
+  {
+    id: "transparency-animation",
+    group: "Visual effects",
+    title: "Turn off transparency and animation effects",
+    summary: "Solid surfaces and instant transitions are lighter on older graphics.",
+    path: ["Settings", "Accessibility", "Visual effects"],
+    steps: [
+      "Open Settings and go to Accessibility › Visual effects.",
+      "Turn off Transparency effects.",
+      "Turn off Animation effects.",
+    ],
+    why: "Translucent materials and animations are drawn by the GPU. On integrated graphics or older PCs, turning them off makes windows and menus feel quicker.",
+    undo: "Turn both switches back on.",
+    impact: "Low",
+    minutes: 1,
+    for: ["laptop"],
+    deepLink: "ms-settings:easeofaccess-visualeffects",
+    caution: "Windows will look flatter. On modern hardware the speed difference is small, so only do this if things feel sluggish.",
+  },
+  {
+    id: "performance-options",
+    group: "Visual effects",
+    title: "Trim effects in Performance Options",
+    summary: "Keep the useful effects, drop the fades and slides.",
+    path: ["System Properties", "Advanced", "Performance", "Settings"],
+    steps: [
+      "Press Win + R, type SystemPropertiesPerformance and press Enter.",
+      "Choose Custom.",
+      "Clear Animate windows when minimizing and maximizing, Fade or slide menus into view, Fade or slide ToolTips into view, and Fade out menu items after clicking.",
+      "Keep Show thumbnails instead of icons and Smooth edges of screen fonts selected, then select Apply.",
+    ],
+    why: "These classic effects add small delays to everyday actions. Removing them makes the desktop respond instantly, while keeping text sharp and previews useful.",
+    undo: "Choose Let Windows choose what's best for my computer, then Apply.",
+    impact: "Low",
+    minutes: 2,
+    for: [],
+    command: { label: "Run", value: "SystemPropertiesPerformance" },
+  },
+  {
+    id: "widgets",
+    group: "Taskbar",
+    title: "Hide Widgets from the taskbar",
+    summary: "Stops the widgets board from loading news and weather in the background.",
+    path: ["Settings", "Personalization", "Taskbar", "Taskbar items"],
+    steps: [
+      "Open Settings and go to Personalization › Taskbar.",
+      "Under Taskbar items, turn off Widgets.",
+    ],
+    why: "The widgets board refreshes its feed in the background. If you never use it, hiding it saves a little memory and network.",
+    undo: "Turn Widgets back on.",
+    impact: "Low",
+    minutes: 1,
+    for: [],
+    deepLink: "ms-settings:taskbar",
+  },
+];
+
 export interface Avoid {
   title: string;
   claim: string;
@@ -996,7 +1242,7 @@ export function tweaksFor(category: CategoryId) {
   return tweaks.filter((t) => t.category === category);
 }
 
-export function matchesProfile(t: Tweak, p: Profile | "all") {
+export function matchesProfile(t: Pick<Tweak, "for">, p: Profile | "all") {
   return p === "all" || t.for.length === 0 || t.for.includes(p);
 }
 
@@ -1075,7 +1321,7 @@ export const tools: Tool[] = [
       { name: "Tweaks › Disable ConsumerFeatures", note: "Stops Windows from quietly installing suggested apps and games on new accounts." },
       { name: "Tweaks › Disable Activity History", note: "The same as turning off activity history in Settings." },
       { name: "Tweaks › Delete Temporary Files and Run Disk Cleanup", note: "A one-time tidy-up. Storage Sense does this on a schedule too." },
-      { name: "Tweaks › Enable End Task With Right Click", note: "Adds End task to taskbar right-click menus. Handy when an app freezes." },
+      { name: "Tweaks › Enable End Task With Right Click", note: "Adds End task to taskbar right-click menus. Not needed on recent versions, where it's built in under Settings › System › Advanced." },
       { name: "Tweaks › Disable GameDVR", note: "For gamers who don't save clips. Same effect as turning off background recording." },
       { name: "Config › repair tools", note: "Reset Windows Update and the system file check are useful when updates are stuck. They don't change any preferences." },
     ],

@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: {
-    default: "Windows Optimise — a calm guide to a faster PC",
+    default: "Optimised Windows",
     template: "%s · Windows Optimise",
   },
   description:

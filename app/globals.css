@@ -260,9 +260,17 @@ button {
   align-items: center;
   gap: 12px;
   padding: 0 12px 0 16px;
-  background: color-mix(in srgb, var(--bg-base) 72%, transparent);
-  backdrop-filter: blur(30px) saturate(1.25);
-  -webkit-backdrop-filter: blur(30px) saturate(1.25);
+  background: var(--bg-base);
+}
+
+/* Acrylic: heavy blur plus a tint, so content scrolling underneath is only a soft colour wash.
+   Write only the standard property; the build adds the -webkit- prefix itself and drops
+   the standard one if both are written together, which breaks the blur in Chrome and Edge. */
+@supports (backdrop-filter: blur(1px)) {
+  .titlebar {
+    background: color-mix(in srgb, var(--bg-base) 70%, transparent);
+    backdrop-filter: blur(60px) saturate(1.6);
+  }
 }
 
 .titlebar__brand {
@@ -471,6 +479,15 @@ button {
 }
 .btn--accent:hover { background: var(--accent-hover); }
 .btn--accent:active { background: var(--accent-pressed); color: var(--text-on-accent); opacity: 0.9; }
+
+/* Subtle warning: soft red tint, for pages that tell you what to avoid */
+.btn--warn {
+  background: color-mix(in srgb, var(--critical) 12%, var(--bg-base));
+  color: var(--critical);
+  border-color: color-mix(in srgb, var(--critical) 35%, transparent);
+}
+.btn--warn:hover { background: color-mix(in srgb, var(--critical) 20%, var(--bg-base)); }
+.btn--warn:active { background: color-mix(in srgb, var(--critical) 26%, var(--bg-base)); color: var(--critical); opacity: 0.9; }
 
 .btn--subtle {
   background: transparent;
@@ -1182,7 +1199,7 @@ button {
     animation: fade-in var(--normal) linear;
   }
 
-  .titlebar { grid-template-columns: auto minmax(0, 1fr) auto; padding: 0 8px; gap: 8px; background: color-mix(in srgb, var(--bg-base) 90%, transparent); }
+  .titlebar { grid-template-columns: auto minmax(0, 1fr) auto; padding: 0 8px; gap: 8px; }
   .titlebar__brand-name { display: none; }
   .titlebar__search { width: 100%; }
   .searchbox__kbd { display: none; }

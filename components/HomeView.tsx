@@ -12,7 +12,7 @@ import {
   Games20Regular,
   People20Regular,
 } from "@fluentui/react-icons";
-import { byImpact, categories, matchesProfile, principles, tweaks } from "@/lib/content";
+import { byImpact, categories, featureChanges, matchesProfile, principles, tweaks } from "@/lib/content";
 import { useAppState } from "./AppState";
 import { CategoryIcon } from "./Icons";
 import { ImpactMeter, ProgressRing, Segmented } from "./Controls";
@@ -29,7 +29,7 @@ export function HomeView() {
     .sort(byImpact)
     .slice(0, 6);
 
-  const relevant = tweaks.filter((t) => matchesProfile(t, profile));
+  const relevant = [...tweaks, ...featureChanges].filter((t) => matchesProfile(t, profile));
   const relevantDone = relevant.filter((t) => done.has(t.id)).length;
   const pct = relevant.length ? relevantDone / relevant.length : 0;
   const minutesLeft = relevant.filter((t) => !done.has(t.id)).reduce((m, t) => m + t.minutes, 0);
@@ -49,7 +49,7 @@ export function HomeView() {
               Start with the essentials
               <ArrowRight16Regular />
             </Link>
-            <Link href="/avoid" className="btn">
+            <Link href="/avoid" className="btn btn--warn">
               What we won&rsquo;t ask you to do
             </Link>
           </div>
@@ -177,6 +177,20 @@ export function HomeView() {
             </Link>
           );
         })}
+        <Link href="/features" className="tile">
+          <span className="tile__plate" style={{ background: "#0F7B8A" }}>
+            <CategoryIcon icon="features" size={22} />
+          </span>
+          <span>
+            <span className="t-body-strong" style={{ display: "block" }}>
+              Optional feature changes
+            </span>
+            <span className="t-caption muted">New Start, taskbar, search and right-click options that cut clutter.</span>
+          </span>
+          <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
+            Make Windows feel better <ArrowRight16Regular />
+          </span>
+        </Link>
         <Link href="/tools" className="tile">
           <span className="tile__plate" style={{ background: "#4f6bed" }}>
             <CategoryIcon icon="tools" size={22} />
@@ -215,7 +229,7 @@ export function HomeView() {
 export function Footer() {
   return (
     <footer className="footer">
-      <span>Steps are written for Windows 11 version 24H2. Names may differ slightly on other versions.</span>
+      <span>Steps are written for Windows 11 version 26H2. Most also apply to 25H2 and 24H2, where some names differ slightly.</span>
       <span>An independent guide. Not affiliated with or endorsed by Microsoft.</span>
     </footer>
   );

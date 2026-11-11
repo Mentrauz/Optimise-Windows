@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search20Regular } from "@fluentui/react-icons";
-import { categories, tweaks } from "@/lib/content";
+import { categories, featureChanges, tweaks, type Tweak } from "@/lib/content";
 import { CategoryIcon } from "./Icons";
 
 function score(q: string, text: string) {
@@ -12,6 +12,16 @@ function score(q: string, text: string) {
   if (i === -1) return -1;
   return i === 0 ? 3 : t[i - 1] === " " ? 2 : 1;
 }
+
+type SearchItem = Omit<Tweak, "category"> & { route: string; groupName: string; icon: Parameters<typeof CategoryIcon>[0]["icon"] };
+
+const searchItems: SearchItem[] = [
+  ...tweaks.map((t) => {
+    const c = categories.find((c) => c.id === t.category)!;
+    return { ...t, route: t.category, groupName: c.name, icon: c.icon };
+  }),
+  ...featureChanges.map((f) => ({ ...f, route: "features", groupName: "Optional feature changes", icon: "features" as const })),
+];
 
 export function SearchBox() {
   const router = useRouter();
@@ -24,7 +34,7 @@ export function SearchBox() {
   const results = useMemo(() => {
     const query = q.trim().toLowerCase();
     if (!query) return [];
-    return tweaks
+    return searchItems
       .map((t) => {
         const s = Math.max(
           score(query, t.title) * 3,
@@ -99,7 +109,7 @@ export function SearchBox() {
             setActive((a) => Math.max(a - 1, 0));
           } else if (e.key === "Enter" && results[active]) {
             e.preventDefault();
-            go(results[active].id, results[active].category);
+            go(results[active].id, results[active].route);
           } else if (e.key === "Escape") {
             setOpen(false);
             inputRef.current?.blur();
@@ -117,7 +127,6 @@ export function SearchBox() {
             <div className="flyout__empty">No results for &ldquo;{q.trim()}&rdquo;</div>
           ) : (
             results.map((t, i) => {
-              const cat = categories.find((c) => c.id === t.category)!;
               return (
                 <div
                   key={t.id}
@@ -128,15 +137,15 @@ export function SearchBox() {
                   onMouseEnter={() => setActive(i)}
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    go(t.id, t.category);
+                    go(t.id, t.route);
                   }}
                 >
                   <span style={{ color: "var(--text-2)", display: "grid" }}>
-                    <CategoryIcon icon={cat.icon} size={18} />
+                    <CategoryIcon icon={t.icon} size={18} />
                   </span>
                   <span style={{ minWidth: 0 }}>
                     <span style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.title}</span>
-                    <span className="t-caption muted">{cat.name}</span>
+                    <span className="t-caption muted">{t.groupName}</span>
                   </span>
                 </div>
               );

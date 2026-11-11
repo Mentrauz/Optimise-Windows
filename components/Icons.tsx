@@ -17,8 +17,6 @@ import {
   GlobeFilled,
   HomeRegular,
   HomeFilled,
-  PaintBrushRegular,
-  PaintBrushFilled,
   ProhibitedRegular,
   ProhibitedFilled,
   ShieldLockRegular,
@@ -29,6 +27,8 @@ import {
   ToolboxFilled,
   ArrowDownloadRegular,
   ArrowDownloadFilled,
+  SparkleRegular,
+  SparkleFilled,
 } from "@fluentui/react-icons";
 import type { Category } from "@/lib/content";
 
@@ -38,7 +38,6 @@ const map: Record<IconKey, { r: React.ElementType; f: React.ElementType }> = {
   home: { r: HomeRegular, f: HomeFilled },
   performance: { r: GaugeRegular, f: GaugeFilled },
   startup: { r: AppsListRegular, f: AppsListFilled },
-  visuals: { r: PaintBrushRegular, f: PaintBrushFilled },
   storage: { r: StorageRegular, f: StorageFilled },
   power: { r: BatteryChargeRegular, f: BatteryChargeFilled },
   gaming: { r: GamesRegular, f: GamesFilled },
@@ -49,6 +48,7 @@ const map: Record<IconKey, { r: React.ElementType; f: React.ElementType }> = {
   avoid: { r: ProhibitedRegular, f: ProhibitedFilled },
   tools: { r: ToolboxRegular, f: ToolboxFilled },
   download: { r: ArrowDownloadRegular, f: ArrowDownloadFilled },
+  features: { r: SparkleRegular, f: SparkleFilled },
 };
 
 export function CategoryIcon({

@@ -9,7 +9,7 @@ import {
   WeatherSunny20Regular,
   DarkTheme20Regular,
 } from "@fluentui/react-icons";
-import { categories, tweaks } from "@/lib/content";
+import { categories, featureChanges, tweaks } from "@/lib/content";
 import { useAppState } from "./AppState";
 import { AppMark, CategoryIcon } from "./Icons";
 import { ProgressRing } from "./Controls";
@@ -52,8 +52,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => setPaneOpen(false), [pathname]);
 
-  const total = tweaks.length;
-  const doneCount = tweaks.filter((t) => done.has(t.id)).length;
+  const total = tweaks.length + featureChanges.length;
+  const doneCount = [...tweaks, ...featureChanges].filter((t) => done.has(t.id)).length;
 
   return (
     <>
@@ -100,6 +100,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               return <NavItem key={c.id} href={`/${c.id}`} icon={c.icon} label={c.name} count={hydrated && d > 0 ? `${d}/${ts.length}` : undefined} />;
             })}
             <div className="pane__sep" role="separator" />
+            <NavItem href="/features" icon="features" label="Optional feature changes" />
             <NavItem href="/tools" icon="tools" label="Optional tools" />
             <NavItem href="/avoid" icon="avoid" label="Leave these alone" />
           </nav>

@@ -51,7 +51,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
   );
 }
 
-export function TweakCard({ tweak, defaultOpen = false }: { tweak: Tweak; defaultOpen?: boolean }) {
+export function TweakCard({ tweak, defaultOpen = false }: { tweak: Omit<Tweak, "category">; defaultOpen?: boolean }) {
   const { done, toggleDone } = useAppState();
   const isDone = done.has(tweak.id);
   const [open, setOpen] = useState(defaultOpen);
