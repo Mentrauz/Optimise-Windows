@@ -21,6 +21,8 @@ import {
   ProhibitedFilled,
   ShieldLockRegular,
   ShieldLockFilled,
+  ShieldCheckmarkRegular,
+  ShieldCheckmarkFilled,
   StorageRegular,
   StorageFilled,
   ToolboxRegular,
@@ -52,6 +54,7 @@ const map: Record<IconKey, { r: React.ElementType; f: React.ElementType }> = {
   download: { r: ArrowDownloadRegular, f: ArrowDownloadFilled },
   features: { r: SparkleRegular, f: SparkleFilled },
   programs: { r: StarRegular, f: StarFilled },
+  protect: { r: ShieldCheckmarkRegular, f: ShieldCheckmarkFilled },
 };
 
 export function CategoryIcon({

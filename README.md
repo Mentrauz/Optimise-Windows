@@ -7,6 +7,7 @@ Every tweak explains why it helps and how to undo it. No scripts, no registry ed
 
 - **Home:** tweaks grouped by category, with a laptop / desktop / gaming profile and progress tracking.
 - **Leave these alone:** common myths and risky tweaks we don't recommend.
+- **Protect yourself:** free tools for checking files, links and leaked passwords (VirusTotal, Have I Been Pwned, Malwarebytes Free).
 - **Optional tools:** safe settings for two well-known third-party tools, plus official links for getting Windows and Office legitimately.
 
 ## Run it

@@ -206,6 +206,20 @@ export function HomeView() {
             See my picks <ArrowRight16Regular />
           </span>
         </Link>
+        <Link href="/protect" className="tile">
+          <span className="tile__plate" style={{ background: "#107C10" }}>
+            <CategoryIcon icon="protect" size={22} />
+          </span>
+          <span>
+            <span className="t-body-strong" style={{ display: "block" }}>
+              Protect yourself
+            </span>
+            <span className="t-caption muted">Check downloads with VirusTotal, find leaked passwords and get a second-opinion scan.</span>
+          </span>
+          <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
+            Check before you run <ArrowRight16Regular />
+          </span>
+        </Link>
         <Link href="/tools" className="tile">
           <span className="tile__plate" style={{ background: "#4f6bed" }}>
             <CategoryIcon icon="tools" size={22} />

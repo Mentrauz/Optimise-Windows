@@ -21,7 +21,7 @@ export interface Category {
   /** One-line description shown under the page title and on tiles. */
   blurb: string;
   /** Key used by <CategoryIcon /> */
-  icon: CategoryId | "home" | "avoid" | "tools" | "download" | "features" | "programs";
+  icon: CategoryId | "home" | "avoid" | "tools" | "download" | "features" | "programs" | "protect";
   /** Tile colour (WinUI-style icon plate). */
   tint: string;
 }
@@ -1639,6 +1639,71 @@ export const recommendedPrograms: RecommendedProgram[] = [
     ],
     undo: "Uninstall it from Settings › Apps › Installed apps. Your bookmarks stay in your old browser.",
     caution: "Brave ships with crypto and AI features, which you can turn off, but some icons may remain. Settings and menu names change between versions.",
+  },
+];
+
+// ───────────── Protect yourself: free checking tools ─────────────
+
+export interface ProtectionTool {
+  id: string;
+  name: string;
+  maker: string;
+  tagline: string;
+  cost: string;
+  source: { label: string; url: string };
+  why: string;
+  steps: string[];
+  caution?: string;
+}
+
+export const protectionTools: ProtectionTool[] = [
+  {
+    id: "virustotal",
+    name: "VirusTotal",
+    maker: "Google",
+    tagline: "Checks a file or link against about 70 antivirus engines at once, before you open it.",
+    cost: "Free for personal use",
+    source: { label: "virustotal.com", url: "https://www.virustotal.com" },
+    why: "One antivirus can miss something. VirusTotal shows you what dozens of them think about the same file or link, in a few seconds, without installing anything. It's the quickest way to sanity-check a download, an email attachment or a link you're not sure about.",
+    steps: [
+      "Go to virustotal.com and choose File, URL or Search.",
+      "For a file, drag it onto the page. For a link, paste it into URL. Don't open the link yourself first.",
+      "Read the score. 0 detections is a good sign. Several detections from well-known engines (Microsoft, Kaspersky, ESET, Bitdefender and similar) means don't run it.",
+      "Check the Details tab for the file's signature. A program from a known company should be signed by that company.",
+    ],
+    caution: "Files you upload are shared with security companies and can be downloaded by paying VirusTotal users. Never upload personal documents, payslips or anything private. Search for the file's SHA-256 hash instead. A clean result doesn't guarantee a file is safe, and one or two detections from obscure engines are often false alarms, especially for tweaking tools like the ones on this site.",
+  },
+  {
+    id: "hibp",
+    name: "Have I Been Pwned",
+    maker: "Troy Hunt",
+    tagline: "Tells you if your email address or a password has turned up in a known data breach.",
+    cost: "Free",
+    source: { label: "haveibeenpwned.com", url: "https://haveibeenpwned.com" },
+    why: "When a site you use is breached, your email and password often end up in leaked lists. If you reuse that password, every account using it is at risk. Have I Been Pwned is a long-running, trusted service that tells you which breaches you're in, so you know which passwords to change.",
+    steps: [
+      "Go to haveibeenpwned.com and enter your email address.",
+      "For each breach listed, change the password on that site, and anywhere else you used the same one.",
+      "Turn on two-step verification for important accounts, starting with your email and Microsoft account.",
+      "Select Notify me to get an email if your address appears in a future breach.",
+    ],
+    caution: "It never asks for your email password. Any site or email claiming to be Have I Been Pwned that asks you to sign in is a scam. A password manager (Microsoft Edge, Bitwarden or similar) makes using a different password for every site easy.",
+  },
+  {
+    id: "malwarebytes",
+    name: "Malwarebytes Free",
+    maker: "Malwarebytes",
+    tagline: "A second-opinion scanner that runs alongside Windows Security when you think something's wrong.",
+    cost: "Free scanner, or Premium (paid)",
+    source: { label: "malwarebytes.com", url: "https://www.malwarebytes.com" },
+    why: "Windows Security is enough protection for most people, so you don't need another antivirus running all the time. But if your PC starts acting strangely, with pop-ups, a changed browser homepage or unknown apps, a scan from a different engine can catch adware and unwanted programs that Defender lets through.",
+    steps: [
+      "Download it from malwarebytes.com only.",
+      "During setup, skip the Premium trial if you only want the scanner. The free version doesn't run in the background, so it won't clash with Windows Security.",
+      "Select Scan and wait for it to finish.",
+      "Review the results and quarantine what it finds. Quarantined items can be restored if something you need was flagged.",
+    ],
+    caution: "If you accept the Premium trial, it turns into a second real-time antivirus for 14 days, then drops back to the free scanner. Don't run two real-time antivirus programs long term. Leave Windows Security as your main protection.",
   },
 ];
 
