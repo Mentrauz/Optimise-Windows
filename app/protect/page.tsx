@@ -72,6 +72,26 @@ export default function ProtectPage() {
               </ol>
             </div>
 
+            {p.optional && (
+              <div className="tool__row">
+                <h3 className="tool__h">Optional, but I use these</h3>
+                <p className="muted t-caption" style={{ margin: "0 0 8px" }}>
+                  Each of these lowers your protection in exchange for performance or fewer interruptions. Skip them if you&rsquo;re not sure.
+                </p>
+                <ul className="optlist">
+                  {p.optional.map((o) => (
+                    <li key={o.name}>
+                      <span aria-hidden className="muted" style={{ textAlign: "center" }}>•</span>
+                      <span>
+                        <b>{o.name}</b>
+                        <span className="muted">{o.note}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {p.caution && (
               <div className="tool__row">
                 <div className="infobar infobar--critical" role="note">

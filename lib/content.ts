@@ -1680,6 +1680,8 @@ export interface ProtectionTool {
   source: { label: string; url: string };
   why: string;
   steps: string[];
+  /** Optional trade-offs the author uses personally: they lower protection in return for something. */
+  optional?: { name: string; note: string }[];
   caution?: string;
 }
 
@@ -1697,6 +1699,11 @@ export const protectionTools: ProtectionTool[] = [
       "Under Virus & threat protection, check that Real-time protection is on, and keep Windows Update running so its definitions stay current.",
       "If something seems wrong, go to Virus & threat protection › Scan options, choose Microsoft Defender Antivirus (offline scan) and select Scan now. Your PC restarts and scans before Windows loads, which catches threats that hide while Windows is running.",
       "Turn on Reputation-based protection (App & browser control) so unknown downloads and sites get blocked.",
+    ],
+    optional: [
+      { name: "Memory integrity (Core isolation): off", note: "I turn this off for a few extra frames in games. Open Windows Security › Device security › Core isolation details, switch Memory integrity off and restart. It makes you less secure, because it's what stops malicious drivers from tampering with the system. If you don't need the extra performance, leave it on." },
+      { name: "BitLocker: off", note: "Encrypting the drive adds a little overhead and a recovery-key risk if your PC ever breaks. To turn it off, search for Manage BitLocker (or open Settings › Privacy & security › Device encryption), then select Turn off. Decryption runs in the background and can take a while, depending on the drive. Your PC stays usable, but let it finish before you shut down. With it off, anyone who gets hold of the drive can read your files, so it suits a desktop at home better than a laptop you carry around." },
+      { name: "Smart App Control: off, or Evaluation mode", note: "It blocks apps Microsoft doesn't recognise, which includes a lot of harmless tools and small developers' programs. It's a personal choice. Open Windows Security › App & browser control › Smart App Control settings and choose Off. If it's in Evaluation mode, it watches how you use your PC and turns itself off if it would get in the way, so you can just leave it. On some builds, once it's off you can't turn it back on without resetting Windows." },
     ],
     caution: "Don't turn Windows Security off to make a game or tool run, and don't install a second real-time antivirus next to it. If a download is blocked, check it on VirusTotal below before you add an exception.",
   },
