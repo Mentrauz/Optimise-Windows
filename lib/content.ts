@@ -1527,6 +1527,33 @@ export const tools: Tool[] = [
     undo: "Run the same command with /disable instead of /enable, then restart. To remove all your changes for a feature, run vivetool /reset /id:<ID>. Run vivetool /fixpriority afterwards so Windows' own rollout takes over again. The restore point is your fallback.",
     caution: "Not supported by Microsoft, and IDs are tied to specific builds. They change often and sources disagree on some of them, so if nothing appears after a restart, that feature isn't in your build yet. Don't expect a fix from Microsoft if a hidden feature misbehaves.",
   },
+  {
+    id: "fmhy",
+    name: "FMHY (FreeMediaHeckYeah)",
+    maker: "Community-run, open source",
+    tagline: "A huge, community-curated index of free tools, apps, guides and services, sorted by category.",
+    cost: "Free",
+    kind: "Website, nothing to install",
+    source: { label: "fmhy.net", url: "https://fmhy.net" },
+    before: [
+      "Open fmhy.net directly. There are many copycat sites and mirrors with similar names, and some are fake.",
+      "Treat it as a directory, not a recommendation. FMHY lists thousands of third-party sites, and it doesn't vouch for every one.",
+      "Check every download on VirusTotal (see Protect yourself) before you run it, and create a restore point before installing anything you haven't used before.",
+    ],
+    use: [
+      { name: "Free and open-source software", note: "A good way to find free alternatives to paid apps: editors, media players, utilities, password managers and more." },
+      { name: "Guides and learning", note: "Free courses, tutorials and reference sites for Windows, coding and general tech skills." },
+      { name: "Windows and system tools pages", note: "Useful for discovering lesser-known utilities. Look for the tool's own official site or GitHub page and download from there, not from a mirror." },
+      { name: "The search box and the Starred (★) picks", note: "FMHY marks its favourites with a star. Start with those instead of working through long lists." },
+    ],
+    skip: [
+      { name: "Pirated software, cracks and activators", note: "Parts of the index link to these. They break licence terms, and cracks and keygens are one of the most common ways malware reaches a PC. See Leave these alone." },
+      { name: "Downloads from sites you can't verify", note: "A link on FMHY isn't a safety check. Prefer the official source, and scan anything else first." },
+      { name: "Ad-heavy download buttons and installers", note: "Fake Download buttons and bundled offers are common on file-hosting sites. If an installer asks to add extra software, cancel." },
+    ],
+    undo: "Nothing to undo for the website itself. For anything you install from it, uninstall it from Settings › Apps › Installed apps, or use the restore point you created.",
+    caution: "This site doesn't endorse piracy, and it isn't covered by the guidance above. If you use FMHY, stick to the free and legitimate sections, and don't run files you haven't checked.",
+  },
 ];
 
 // ───────────── Programs recommended by the site author ─────────────
@@ -1658,6 +1685,22 @@ export interface ProtectionTool {
 
 export const protectionTools: ProtectionTool[] = [
   {
+    id: "windows-security",
+    name: "Windows Security (Microsoft Defender)",
+    maker: "Microsoft",
+    tagline: "The antivirus already built into Windows. For everyday use, it's all you need.",
+    cost: "Free, built into Windows",
+    source: { label: "microsoft.com/windows/comprehensive-security", url: "https://www.microsoft.com/en-us/windows/comprehensive-security" },
+    why: "It scans files as you open them, blocks dangerous downloads and websites, updates itself through Windows Update, and tops independent tests often enough that a paid antivirus adds little for most people. Because it's built in, it doesn't slow your PC down the way many third-party suites do.",
+    steps: [
+      "Open Start, type Windows Security and open it. Every section should show a green tick.",
+      "Under Virus & threat protection, check that Real-time protection is on, and keep Windows Update running so its definitions stay current.",
+      "If something seems wrong, go to Virus & threat protection › Scan options, choose Microsoft Defender Antivirus (offline scan) and select Scan now. Your PC restarts and scans before Windows loads, which catches threats that hide while Windows is running.",
+      "Turn on Reputation-based protection (App & browser control) so unknown downloads and sites get blocked.",
+    ],
+    caution: "Don't turn Windows Security off to make a game or tool run, and don't install a second real-time antivirus next to it. If a download is blocked, check it on VirusTotal below before you add an exception.",
+  },
+  {
     id: "virustotal",
     name: "VirusTotal",
     maker: "Google",
@@ -1688,22 +1731,6 @@ export const protectionTools: ProtectionTool[] = [
       "Select Notify me to get an email if your address appears in a future breach.",
     ],
     caution: "It never asks for your email password. Any site or email claiming to be Have I Been Pwned that asks you to sign in is a scam. A password manager (Microsoft Edge, Bitwarden or similar) makes using a different password for every site easy.",
-  },
-  {
-    id: "malwarebytes",
-    name: "Malwarebytes Free",
-    maker: "Malwarebytes",
-    tagline: "A second-opinion scanner that runs alongside Windows Security when you think something's wrong.",
-    cost: "Free scanner, or Premium (paid)",
-    source: { label: "malwarebytes.com", url: "https://www.malwarebytes.com" },
-    why: "Windows Security is enough protection for most people, so you don't need another antivirus running all the time. But if your PC starts acting strangely, with pop-ups, a changed browser homepage or unknown apps, a scan from a different engine can catch adware and unwanted programs that Defender lets through.",
-    steps: [
-      "Download it from malwarebytes.com only.",
-      "During setup, skip the Premium trial if you only want the scanner. The free version doesn't run in the background, so it won't clash with Windows Security.",
-      "Select Scan and wait for it to finish.",
-      "Review the results and quarantine what it finds. Quarantined items can be restored if something you need was flagged.",
-    ],
-    caution: "If you accept the Premium trial, it turns into a second real-time antivirus for 14 days, then drops back to the free scanner. Don't run two real-time antivirus programs long term. Leave Windows Security as your main protection.",
   },
 ];
 

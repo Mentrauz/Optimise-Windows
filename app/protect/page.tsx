@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Protect yourself",
-  description: "Free tools for checking downloads and links with VirusTotal, finding leaked passwords with Have I Been Pwned, and getting a second-opinion malware scan.",
+  description: "Why Windows Security is enough for everyday use, plus free tools for checking downloads and links with VirusTotal and finding leaked passwords with Have I Been Pwned.",
 };
 
 export default function ProtectPage() {
@@ -26,19 +26,10 @@ export default function ProtectPage() {
         </div>
       </div>
       <p className="page-lede">
-        Windows Security already protects you well, so you don&rsquo;t need to buy an antivirus. These free tools help
-        with the things it can&rsquo;t judge for you: whether a download or link is safe, and whether your passwords
-        have leaked.
+        Windows Security already protects you well, so you don&rsquo;t need to buy an antivirus. Start there, then use
+        the free tools below for what it can&rsquo;t judge for you: whether a download or link is safe, and whether your
+        passwords have leaked.
       </p>
-
-      <div className="infobar infobar--info" role="note" style={{ marginBottom: 16 }}>
-        <span className="infobar__icon" aria-hidden>i</span>
-        <span>
-          <b>Keep Windows Security on.</b> It&rsquo;s your real-time protection. If you think something is hiding from
-          it, open Windows Security › Virus &amp; threat protection › Scan options and run a Microsoft Defender Offline
-          scan, which restarts your PC and scans before Windows loads.
-        </span>
-      </div>
 
       <div className="stack" style={{ gap: 16 }}>
         {protectionTools.map((p) => (

@@ -445,7 +445,6 @@ button {
 .page-lede {
   margin: 4px 0 24px;
   color: var(--text-2);
-  max-width: 64ch;
 }
 
 .section-title {

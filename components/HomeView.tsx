@@ -214,7 +214,7 @@ export function HomeView() {
             <span className="t-body-strong" style={{ display: "block" }}>
               Protect yourself
             </span>
-            <span className="t-caption muted">Check downloads with VirusTotal, find leaked passwords and get a second-opinion scan.</span>
+            <span className="t-caption muted">Windows Security, checking downloads with VirusTotal, and finding leaked passwords.</span>
           </span>
           <span className="tile__foot t-caption" style={{ color: "var(--accent-text)" }}>
             Check before you run <ArrowRight16Regular />

@@ -8,10 +8,10 @@ import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Optional tools",
-  description: "The safe parts of O&O ShutUp10++ and Chris Titus Tech's Windows Utility, how to use ViVeTool to unlock new features early, official Windows and Office downloads, and every legitimate way to get a licence.",
+  description: "The safe parts of O&O ShutUp10++ and Chris Titus Tech's Windows Utility, how to use ViVeTool to unlock new features early, how to use the FMHY link index safely, official Windows and Office downloads, and every legitimate way to get a licence.",
 };
 
-const tints: Record<string, string> = { shutup10: "#5C2E91", winutil: "#0063B1", vivetool: "#5D5A58" };
+const tints: Record<string, string> = { shutup10: "#5C2E91", winutil: "#0063B1", vivetool: "#5D5A58", fmhy: "#C239B3" };
 
 export default function ToolsPage() {
   return (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   Navigation20Regular,
   WeatherMoon20Regular,
@@ -124,12 +124,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {categories.map((c) => {
               const ts = tweaks.filter((t) => t.category === c.id);
               const d = ts.filter((t) => done.has(t.id)).length;
-              return <NavItem key={c.id} href={`/${c.id}`} icon={c.icon} label={c.name} count={hydrated && d > 0 ? `${d}/${ts.length}` : undefined} collapsed={collapsed} />;
+              return (
+                <Fragment key={c.id}>
+                  <NavItem href={`/${c.id}`} icon={c.icon} label={c.name} count={hydrated && d > 0 ? `${d}/${ts.length}` : undefined} collapsed={collapsed} />
+                  {c.id === "performance" && <NavItem href="/protect" icon="protect" label="Protect yourself" collapsed={collapsed} />}
+                </Fragment>
+              );
             })}
             <div className="pane__sep" role="separator" />
             <NavItem href="/features" icon="features" label="Optional feature changes" collapsed={collapsed} />
             <NavItem href="/programs" icon="programs" label="Programs I recommend" collapsed={collapsed} />
-            <NavItem href="/protect" icon="protect" label="Protect yourself" collapsed={collapsed} />
             <NavItem href="/tools" icon="tools" label="Optional tools" collapsed={collapsed} />
             <NavItem href="/avoid" icon="avoid" label="Leave these alone" collapsed={collapsed} />
           </nav>
