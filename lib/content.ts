@@ -1752,7 +1752,10 @@ export const officialSources: OfficialSource[] = [
   {
     title: "Windows 11",
     text: "Microsoft offers three free downloads. Use Installation Assistant to upgrade this PC, Media Creation Tool to make a bootable USB, or the ISO for a virtual machine. You still need a licence to activate.",
-    links: [{ label: "Download Windows 11", url: "https://www.microsoft.com/software-download/windows11" }],
+    links: [
+      { label: "Download Windows 11", url: "https://www.microsoft.com/software-download/windows11" },
+      { label: "Which ISO do I need?", url: "#windows-iso" },
+    ],
   },
   {
     title: "Microsoft 365 and Office 2024",
@@ -1771,6 +1774,41 @@ export const officialSources: OfficialSource[] = [
     ],
   },
 ];
+
+// ───────────── Windows ISO downloads ─────────────
+
+export interface IsoSource {
+  title: string;
+  text: string;
+  url: string;
+}
+
+export const isoSources: IsoSource[] = [
+  {
+    title: "Windows 11 (x64)",
+    text: "The right choice for almost every Intel and AMD PC. One ISO contains Home, Pro and Education. Your licence decides which edition installs.",
+    url: "https://www.microsoft.com/software-download/windows11",
+  },
+  {
+    title: "Windows 11 (Arm64)",
+    text: "For PCs with a Snapdragon or other Arm processor, and for virtual machines on Apple silicon Macs.",
+    url: "https://www.microsoft.com/software-download/windows11arm64",
+  },
+  {
+    title: "Windows 11 Enterprise evaluation",
+    text: "A free 90-day trial for testing and virtual machines. It can't be activated with a normal Home or Pro key, so don't use it on your main PC.",
+    url: "https://www.microsoft.com/evalcenter/evaluate-windows-11-enterprise",
+  },
+];
+
+export const isoSteps: string[] = [
+  "Open the Windows 11 download page and scroll to Download Windows 11 Disk Image (ISO). Choose Windows 11 (multi-edition ISO), then your language. Use the same language as your current Windows if you're reinstalling.",
+  "Download the ISO. The link Microsoft gives you expires after 24 hours.",
+  "Check the file isn't corrupted. In PowerShell, run the command below in the folder with the ISO and compare the result with the SHA256 hash listed under Verify your download on the same page.",
+  "To install on this PC, double-click the ISO and run setup.exe. To install on another PC or do a clean install, make a bootable USB of 8 GB or more with Media Creation Tool, or write the ISO to the USB with Rufus.",
+];
+
+export const isoHashCommand = "Get-FileHash .\\Win11_*.iso -Algorithm SHA256";
 
 // ───────────── Legitimate licence programmes ─────────────
 

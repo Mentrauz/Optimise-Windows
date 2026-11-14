@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { officialSources, tools } from "@/lib/content";
+import { isoHashCommand, isoSources, isoSteps, officialSources, tools } from "@/lib/content";
 import { CategoryIcon } from "@/components/Icons";
 import { ToolCard } from "@/components/ToolCard";
 import { LicenceSection } from "@/components/LicenceSection";
@@ -77,6 +77,58 @@ export default function ToolsPage() {
           </section>
         ))}
       </div>
+
+      <section id="windows-iso" style={{ scrollMarginTop: 64 }}>
+        <h2 className="t-subtitle" style={{ margin: "40px 0 4px" }}>Get a Windows ISO</h2>
+        <p className="page-lede" style={{ marginBottom: 16 }}>
+          An ISO is a single file containing the full Windows installer. You need one for a clean install, a repair
+          install or a virtual machine. Only download it from Microsoft. Modified ISOs from other sites can contain
+          malware and are harder to update.
+        </p>
+        <div className="grid-3">
+          {isoSources.map((s) => (
+            <section key={s.title} className="card source">
+              <span className="principle__icon">
+                <CategoryIcon icon="download" size={18} />
+              </span>
+              <h3 className="t-body-strong" style={{ margin: "12px 0 4px" }}>{s.title}</h3>
+              <p className="muted t-caption" style={{ margin: "0 0 12px" }}>{s.text}</p>
+              <div className="source__links">
+                <a className="link" href={s.url} target="_blank" rel="noopener noreferrer">
+                  Download page ›
+                </a>
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <div className="card" style={{ padding: 16, marginTop: 16 }}>
+          <h3 className="t-body-strong" style={{ margin: "0 0 10px" }}>Download and check the Windows 11 ISO</h3>
+          <ol className="steps">
+            {isoSteps.map((s, i) => (
+              <li key={i}>
+                <span>
+                  {s}
+                  {i === 2 && (
+                    <>
+                      <br />
+                      <code className="code-pill">{isoHashCommand}</code>
+                    </>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <div className="source__links" style={{ marginTop: 12 }}>
+            <a className="link" href="https://go.microsoft.com/fwlink/?linkid=2156295" target="_blank" rel="noopener noreferrer">
+              Media Creation Tool ›
+            </a>
+            <a className="link" href="https://rufus.ie" target="_blank" rel="noopener noreferrer">
+              Rufus ›
+            </a>
+          </div>
+        </div>
+      </section>
 
       <div className="infobar infobar--critical" role="note" style={{ marginTop: 16 }}>
         <span className="infobar__icon" aria-hidden>×</span>

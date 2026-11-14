@@ -3,25 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search20Regular } from "@fluentui/react-icons";
-import { categories, featureChanges, tweaks, type Tweak } from "@/lib/content";
+import { search } from "@/lib/search";
 import { CategoryIcon } from "./Icons";
-
-function score(q: string, text: string) {
-  const t = text.toLowerCase();
-  const i = t.indexOf(q);
-  if (i === -1) return -1;
-  return i === 0 ? 3 : t[i - 1] === " " ? 2 : 1;
-}
-
-type SearchItem = Omit<Tweak, "category"> & { route: string; groupName: string; icon: Parameters<typeof CategoryIcon>[0]["icon"] };
-
-const searchItems: SearchItem[] = [
-  ...tweaks.map((t) => {
-    const c = categories.find((c) => c.id === t.category)!;
-    return { ...t, route: t.category, groupName: c.name, icon: c.icon };
-  }),
-  ...featureChanges.map((f) => ({ ...f, route: "features", groupName: "Optional feature changes", icon: "features" as const })),
-];
 
 export function SearchBox() {
   const router = useRouter();
@@ -31,24 +14,7 @@ export function SearchBox() {
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const results = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    if (!query) return [];
-    return searchItems
-      .map((t) => {
-        const s = Math.max(
-          score(query, t.title) * 3,
-          score(query, t.path.join(" ")) * 2,
-          score(query, t.summary),
-          score(query, t.steps.join(" ")) > 0 ? 0.5 : -1,
-        );
-        return { t, s };
-      })
-      .filter((r) => r.s > 0)
-      .sort((a, b) => b.s - a.s)
-      .slice(0, 8)
-      .map((r) => r.t);
-  }, [q]);
+  const results = useMemo(() => search(q, 8), [q]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
